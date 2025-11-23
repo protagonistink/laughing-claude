@@ -76,7 +76,8 @@ Replace `https://protagonist-ink.netlify.app` with your actual Netlify URL.
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Find hamburger button - adjust selector to match your element
-    const hamburger = document.querySelector('.w-nav-button') ||
+    const hamburger = document.querySelector('.menu-burger') ||
+                      document.querySelector('.w-nav-button') ||
                       document.querySelector('.hamburger-trigger') ||
                       document.querySelector('[data-nav-trigger]');
 
