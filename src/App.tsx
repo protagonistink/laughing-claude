@@ -144,18 +144,12 @@ export default function App() {
         <div className="flex-1 flex flex-col justify-between p-8 lg:p-16 overflow-y-auto">
           {/* Top Section */}
           <div className="space-y-12">
-            {/* Logo - TODO: Replace with your actual logo */}
+            {/* Logo */}
             <div className="mb-12">
               <a href="/" className="inline-block">
-                <img
-                  src="https://via.placeholder.com/150x40/282828/F9F9F9?text=Protagonist+Ink"
-                  alt="Protagonist Ink"
-                  className="h-8 lg:h-10"
-                />
-                {/* Or use text logo: */}
-                {/* <h1 className="text-2xl font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                <h1 className="text-2xl lg:text-3xl font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                   Protagonist Ink
-                </h1> */}
+                </h1>
               </a>
             </div>
 
