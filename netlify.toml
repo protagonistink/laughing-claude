@@ -1,0 +1,28 @@
+# Netlify configuration for Protagonist Ink Menu
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# CORS headers to allow Webflow integration
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+# Specific headers for JavaScript modules
+[[headers]]
+  for = "/assets/*.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# CSS files
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Content-Type = "text/css; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"

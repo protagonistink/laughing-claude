@@ -79,6 +79,8 @@ This creates `dist/assets/index.js` and `dist/assets/index.css`.
 2. Drag and drop the `dist/` folder
 3. Copy your Netlify URL (e.g., `https://protagonist-ink.netlify.app`)
 
+**Note:** The project includes `netlify.toml` and `public/_headers` files that configure CORS headers to allow your Webflow site to load the React app. These are automatically deployed with your site.
+
 ### 6. Integrate with Webflow
 
 **📖 Follow the complete guide:** [WEBFLOW_INTEGRATION.md](./WEBFLOW_INTEGRATION.md)
@@ -206,6 +208,18 @@ They communicate via **window events** - no direct connection needed!
 ---
 
 ## 🐛 Troubleshooting
+
+### CORS Error: "Access to script has been blocked by CORS policy"
+
+This means Netlify isn't allowing your Webflow site to load the React app. **Solution:**
+
+1. Make sure `netlify.toml` and `public/_headers` are in your project
+2. Rebuild your project: `npm run build`
+3. Redeploy the entire `dist/` folder to Netlify
+4. Wait 1-2 minutes for Netlify to apply the new headers
+5. Hard refresh your Webflow page (Ctrl+Shift+R / Cmd+Shift+R)
+
+If the issue persists, check Netlify's deploy logs to confirm the headers were applied.
 
 ### Hamburger does nothing when clicked
 

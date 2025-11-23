@@ -1,0 +1,17 @@
+# CORS headers for Webflow integration
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, OPTIONS
+  Access-Control-Allow-Headers: Content-Type
+
+# JavaScript modules
+/assets/*.js
+  Access-Control-Allow-Origin: *
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS files
+/assets/*.css
+  Access-Control-Allow-Origin: *
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
