@@ -97,22 +97,22 @@ const App = () => {
       {/* CUSTOM HAMBURGER BUTTON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-6 right-6 z-[2147483647] p-2 group text-white pointer-events-auto mix-blend-difference"
+        className="fixed top-6 right-6 z-[2147483647] p-2 group text-white pointer-events-auto drop-shadow-lg"
         aria-label="Toggle Menu"
         style={{ cursor: 'pointer' }}
       >
         <div className="relative w-8 h-6 flex flex-col justify-between items-center">
           <motion.span
             animate={isOpen ? { rotate: 45, y: 11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300 origin-center"
+            className="w-full h-0.5 bg-white block transition-all duration-300 origin-center shadow-sm"
           />
           <motion.span
             animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300"
+            className="w-full h-0.5 bg-white block transition-all duration-300 shadow-sm"
           />
           <motion.span
             animate={isOpen ? { rotate: -45, y: -11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300 origin-center"
+            className="w-full h-0.5 bg-white block transition-all duration-300 origin-center shadow-sm"
           />
         </div>
       </button>
