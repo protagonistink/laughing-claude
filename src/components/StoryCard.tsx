@@ -9,10 +9,10 @@ export default function StoryCard({ story }: StoryCardProps) {
   return (
     <a
       href="#"
-      className="group flex flex-col hover:opacity-80 transition-opacity duration-300"
+      className="group flex items-center gap-6 hover:opacity-70 transition-all duration-300 py-4"
     >
-      {/* Image - 16:9 aspect ratio for grid */}
-      <div className="w-full aspect-video overflow-hidden rounded-lg mb-4">
+      {/* Image - Square/Portrait */}
+      <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded">
         {story.imageUrl ? (
           <img
             src={story.imageUrl}
@@ -25,27 +25,26 @@ export default function StoryCard({ story }: StoryCardProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <p
-          className="text-xs text-[#F9F9F9]/60 mb-2"
+          className="text-xs text-[#F9F9F9]/60 mb-1"
           style={{ fontFamily: 'Karla, sans-serif' }}
         >
           {story.body}
         </p>
-        <div className="flex items-center justify-between gap-2">
-          <h3
-            className="text-lg font-light leading-tight flex-1"
-            style={{ fontFamily: 'Karla, sans-serif' }}
-          >
-            {story.title}
-          </h3>
-          {/* Arrow */}
-          <ArrowRight
-            size={20}
-            className="flex-shrink-0 text-[#F9F9F9] group-hover:translate-x-1 transition-transform duration-300"
-          />
-        </div>
+        <h3
+          className="text-lg font-light leading-tight"
+          style={{ fontFamily: 'Karla, sans-serif' }}
+        >
+          {story.title}
+        </h3>
       </div>
+
+      {/* Arrow */}
+      <ArrowRight
+        size={24}
+        className="flex-shrink-0 text-[#F9F9F9] group-hover:translate-x-2 transition-transform duration-300"
+      />
     </a>
   );
 }

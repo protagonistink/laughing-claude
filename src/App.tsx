@@ -198,9 +198,9 @@ export default function App() {
           </div>
 
           {/* Bottom Right Section - Email Form + Social Icons */}
-          <div className="flex items-end justify-between gap-8 mt-12">
+          <div className="flex items-end justify-end gap-6 mt-12">
             {/* Newsletter Form */}
-            <form onSubmit={handleSubmit} className="flex-1 max-w-sm">
+            <form onSubmit={handleSubmit} className="max-w-xs">
               <input
                 type="email"
                 placeholder="Your email"
@@ -242,7 +242,7 @@ export default function App() {
           initial="hidden"
           animate="visible"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col space-y-2">
             {sampleStories.map((story) => (
               <motion.div key={story.id} variants={fadeUp}>
                 <StoryCard story={story} />
