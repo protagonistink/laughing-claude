@@ -34,10 +34,10 @@ export default function CursorTrail() {
         timestamp: Date.now()
       });
 
-      // Keep only recent points (last 1.5 seconds)
+      // Keep only recent points (last 1 second)
       const now = Date.now();
       pointsRef.current = pointsRef.current.filter(
-        point => now - point.timestamp < 1500
+        point => now - point.timestamp < 1000
       );
     };
 
@@ -47,9 +47,8 @@ export default function CursorTrail() {
     const draw = () => {
       if (!ctx || !canvas) return;
 
-      // Clear canvas with fade effect
-      ctx.fillStyle = 'rgba(40, 40, 40, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Clear canvas completely for full disappearance
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const points = pointsRef.current;
       if (points.length < 2) {
@@ -64,14 +63,14 @@ export default function CursorTrail() {
         const point = points[i];
         const nextPoint = points[i + 1];
         const age = now - point.timestamp;
-        const opacity = Math.max(0, 1 - age / 1500);
+        const opacity = Math.max(0, 1 - age / 1000);
 
         ctx.beginPath();
         ctx.moveTo(point.x, point.y);
         ctx.lineTo(nextPoint.x, nextPoint.y);
 
-        // Pen-like stroke with red color
-        ctx.strokeStyle = `rgba(200, 60, 47, ${opacity * 0.6})`;
+        // Pen-like stroke with #1e3f66 color
+        ctx.strokeStyle = `rgba(30, 63, 102, ${opacity * 0.6})`;
         ctx.lineWidth = 2 + Math.random() * 1.5; // Varying width for pen effect
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -81,7 +80,7 @@ export default function CursorTrail() {
         if (i % 2 === 0) {
           ctx.beginPath();
           ctx.arc(point.x, point.y, 1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(200, 60, 47, ${opacity * 0.4})`;
+          ctx.fillStyle = `rgba(30, 63, 102, ${opacity * 0.4})`;
           ctx.fill();
         }
       }
