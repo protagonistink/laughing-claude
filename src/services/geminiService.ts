@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { Story } from "../types";
 
 // Mock data in case API key is missing or fails
@@ -35,20 +35,20 @@ export const generateCreativeStories = async (): Promise<Story[]> => {
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: apiKey });
+    const ai = new GoogleGenerativeAI(apiKey);
+    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: "Generate 3 creative, avant-garde design agency case study titles. They should sound prestigious and artistic. Return strictly JSON.",
-      config: {
+    const response = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: "Generate 3 creative, avant-garde design agency case study titles. They should sound prestigious and artistic. Return strictly JSON in this format: [{\"title\": \"...\", \"category\": \"Story\"}]" }] }],
+      generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: Type.ARRAY,
+          type: SchemaType.ARRAY,
           items: {
-            type: Type.OBJECT,
+            type: SchemaType.OBJECT,
             properties: {
-              title: { type: Type.STRING },
-              category: { type: Type.STRING, description: "Usually just 'Story' or 'Case Study'" },
+              title: { type: SchemaType.STRING },
+              category: { type: SchemaType.STRING, description: "Usually just 'Story' or 'Case Study'" },
             },
             required: ["title", "category"]
           }
@@ -56,7 +56,8 @@ export const generateCreativeStories = async (): Promise<Story[]> => {
       }
     });
 
-    const text = response.text;
+    const result = response.response;
+    const text = result.text();
     if (!text) {
       throw new Error("No text returned from Gemini");
     }
