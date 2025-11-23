@@ -146,11 +146,9 @@ export default function App() {
           <div className="space-y-12">
             {/* Logo */}
             <div className="mb-12">
-              <a href="/" className="inline-block">
-                <h1 className="text-2xl lg:text-3xl font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                  Protagonist Ink
-                </h1>
-              </a>
+              <h1 className="text-2xl lg:text-3xl font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                Protagonist Ink
+              </h1>
             </div>
 
             {/* Main Nav Links */}
