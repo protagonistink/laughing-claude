@@ -8,7 +8,7 @@ import { Story } from './types';
 
 const App = () => {
   // Default to false for Production (Webflow triggers it).
-  // If you are previewing locally and see nothing, change this to true.
+  // If you are previewing locally and see nothing, temporarily change this to true.
   const [isOpen, setIsOpen] = useState(false);
   const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -19,16 +19,23 @@ const App = () => {
   const [isWorkHovered, setIsWorkHovered] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
+  // Any Webflow "toggleMenu" event simply OPENS the overlay.
   useEffect(() => {
-    const handleToggle = (event: CustomEvent) => {
-      setIsOpen(event.detail.isOpen);
+    const handleToggle = () => {
+      setIsOpen(true);
     };
 
     window.addEventListener('toggleMenu', handleToggle as EventListener);
     return () => window.removeEventListener('toggleMenu', handleToggle as EventListener);
   }, []);
 
+  const handleClose = () => {
+    setIsOpen(false);
 
+    // Optional: tell Webflow the menu has closed if you want
+    // to wire Lottie/IX back to the burger state.
+    window.dispatchEvent(new CustomEvent('menuClosed'));
+  };
 
   const handleGenerate = async () => {
     if (isGenerating) return;
@@ -42,12 +49,11 @@ const App = () => {
   };
 
   const navItems = [
-    { label: "What's our Story", href: "#" },
+    { label: "Our Story", href: "#" },
     { label: "What We Do", href: "#" },
     { label: "Get in Touch", href: "#" }
   ];
 
-  // Animation Variants
   // Animation Variants
   const containerVariants = {
     hidden: { y: '-100%' },
@@ -94,55 +100,41 @@ const App = () => {
     <>
       <CursorTrail />
 
-      {/* CUSTOM HAMBURGER BUTTON */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-6 right-6 z-[2147483647] p-2 group text-white pointer-events-auto drop-shadow-lg"
-        aria-label="Toggle Menu"
-        style={{ cursor: 'pointer' }}
-      >
-        <div className="relative w-8 h-6 flex flex-col justify-between items-center">
-          <motion.span
-            animate={isOpen ? { rotate: 45, y: 11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 origin-center shadow-sm"
-          />
-          <motion.span
-            animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 shadow-sm"
-          />
-          <motion.span
-            animate={isOpen ? { rotate: -45, y: -11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 origin-center shadow-sm"
-          />
-        </div>
-      </button>
-
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="app-container"
-            // Fixed background color to bg-brand-dark
             className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 cursor-none pointer-events-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
             variants={containerVariants}
           >
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={handleClose}
+              className="absolute top-6 right-6 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
+              aria-label="Close menu"
+              style={{ cursor: 'pointer' }}
+            >
+              <span className="block text-3xl leading-none">×</span>
+            </button>
+
             {/* AMBIENT LIGHTING BACKGROUND */}
             <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-highlightRed/5 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none z-0" />
 
             {/* BACKGROUND TEXTURE */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-            }} />
-
-            {/* HEADER REMOVED - Handled by Webflow */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+              }}
+            />
 
             {/* MAIN GRID */}
-            {/* Added pt-32 to push content down below Webflow header */}
+            {/* pt-32 to clear the Webflow navbar */}
             <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-32">
-
               {/* LEFT COLUMN: Main Navigation */}
               <div className="lg:col-span-7 flex flex-col justify-center">
                 <motion.nav
@@ -166,7 +158,6 @@ const App = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span
-                        // Updated to lg:text-9xl and leading-[0.9] for massive cinematic typography
                         className="block text-5xl md:text-7xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
                       >
                         {item.label}
@@ -217,39 +208,39 @@ const App = () => {
                 </motion.div>
               </div>
 
-              {/* RIGHT COLUMN: Stories List */}
-              {/* Hidden on tablet/mobile */}
-              <div className="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-4 md:space-y-6 relative">
+              {/* RIGHT COLUMN: Stories Panel */}
+              <div className="hidden lg:flex lg:col-span-5 items-center justify-center relative">
                 <motion.button
                   onClick={handleGenerate}
                   disabled={isGenerating}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute -top-16 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
+                  className="absolute -top-12 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
                 >
                   <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
                   {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
                 </motion.button>
 
-                <AnimatePresence mode="wait">
-                  {stories.map((story, index) => (
-                    <motion.div
-                      key={story.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <StoryCard story={story} index={index} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-6">
+                  <AnimatePresence mode="wait">
+                    {stories.map((story, index) => (
+                      <motion.div
+                        key={story.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ delay: index * 0.08 }}
+                      >
+                        <StoryCard story={story} index={index} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
             </main>
 
             {/* FOOTER */}
-            {/* Moved to bottom right: justify-end items-end */}
             <motion.footer
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -257,10 +248,11 @@ const App = () => {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
             >
-
               {/* Newsletter */}
               <div className="hidden md:flex w-full md:w-auto flex-col items-end">
-                <p className="text-xs uppercase tracking-widest mb-4 text-white/50 font-sans">Become a Protagonist</p>
+                <p className="text-xs uppercase tracking-widest mb-4 text-white/50 font-sans">
+                  Become a Protagonist
+                </p>
                 <div className="relative w-full md:w-80">
                   <MailIcon className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <input
@@ -275,10 +267,20 @@ const App = () => {
 
               {/* Socials */}
               <div className="flex gap-6 text-white/60 items-center pb-3 w-full md:w-auto justify-end">
-                <a href="https://linkedin.com/company/protagonistink" target="_blank" className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none">
+                <a
+                  href="https://linkedin.com/company/protagonistink"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none"
+                >
                   <LinkedinIcon className="w-5 h-5" />
                 </a>
-                <a href="https://instagram.com/protagonist.ink" target="_blank" className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none">
+                <a
+                  href="https://instagram.com/protagonist.ink"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none"
+                >
                   <InstagramIcon className="w-5 h-5" />
                 </a>
               </div>
