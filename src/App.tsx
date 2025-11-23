@@ -157,36 +157,35 @@ export default function App() {
             </div>
 
             {/* Main Nav Links */}
-            <div className="lg:col-span-7 flex flex-col justify-center md:pl-16 lg:pl-40">
-              <motion.nav
-                variants={staggerContainer}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="flex flex-col mb-16"
-                onMouseLeave={() => setHoveredNav(null)}
-              >
-                {navItems.map((item) => (
-                  <motion.a
-                    key={item.label}
-                    href={item.href}
-                    variants={fadeUp}
-                    className="group block w-fit cursor-none relative"
-                    onMouseEnter={() => setHoveredNav(item.label)}
-                    animate={{
-                      opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
-                    }}
-                    transition={{ duration: 0.3 }}
+            <motion.nav
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="flex flex-col mb-16 md:pl-16 lg:pl-40"
+              onMouseLeave={() => setHoveredNav(null)}
+            >
+              {navItems.map((item) => (
+                <motion.a
+                  key={item.label}
+                  href={item.href}
+                  variants={fadeUp}
+                  className="group block w-fit relative"
+                  onMouseEnter={() => setHoveredNav(item.label)}
+                  animate={{
+                    opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span
+                    className="block text-5xl md:text-7xl lg:text-8xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-[#C83C2F] pb-2"
+                    style={{ fontFamily: 'Cormorant Garamond, serif' }}
                   >
-                    <span
-                      className="block text-5xl md:text-7xl lg:text-8xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-[#C83C2F] pb-2"
-                    >
-                      {item.label}
-                    </span>
-                  </motion.a>
-                ))}
-              </motion.nav>
-            </div>
+                    {item.label}
+                  </span>
+                </motion.a>
+              ))}
+            </motion.nav>
 
             {/* Start Your Journey Button */}
             <motion.div
