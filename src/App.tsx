@@ -94,26 +94,76 @@ const App = () => {
       <CursorTrail />
 
       {/* CUSTOM HAMBURGER BUTTON */}
-      <button
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-6 right-6 z-[2147483647] p-4 group cursor-none mix-blend-difference text-white pointer-events-auto"
+        className="fixed top-6 right-6 z-[2147483647] p-4 group cursor-none pointer-events-auto"
         aria-label="Toggle Menu"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
       >
+        {/* Animated glow background */}
+        <motion.div
+          className="absolute inset-0 rounded-full blur-xl opacity-0 group-hover:opacity-100"
+          animate={{
+            background: isOpen
+              ? ['rgba(200, 60, 47, 0.3)', 'rgba(200, 60, 47, 0.5)', 'rgba(200, 60, 47, 0.3)']
+              : ['rgba(249, 249, 249, 0.2)', 'rgba(249, 249, 249, 0.4)', 'rgba(249, 249, 249, 0.2)']
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+
+        {/* Hamburger bars container */}
         <div className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5">
           <motion.span
-            animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300"
+            animate={{
+              rotate: isOpen ? 45 : 0,
+              y: isOpen ? 6 : 0,
+              backgroundColor: isOpen ? '#C83C2F' : '#F9F9F9'
+            }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full h-0.5 block origin-center"
+            style={{
+              boxShadow: isOpen ? '0 0 10px rgba(200, 60, 47, 0.6)' : 'none'
+            }}
           />
           <motion.span
-            animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300"
+            animate={{
+              opacity: isOpen ? 0 : 1,
+              scale: isOpen ? 0 : 1,
+              backgroundColor: '#F9F9F9'
+            }}
+            transition={{ duration: 0.2 }}
+            className="w-full h-0.5 block"
           />
           <motion.span
-            animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-current block transition-all duration-300"
+            animate={{
+              rotate: isOpen ? -45 : 0,
+              y: isOpen ? -6 : 0,
+              backgroundColor: isOpen ? '#C83C2F' : '#F9F9F9'
+            }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full h-0.5 block origin-center"
+            style={{
+              boxShadow: isOpen ? '0 0 10px rgba(200, 60, 47, 0.6)' : 'none'
+            }}
           />
         </div>
-      </button>
+
+        {/* Rotating ring indicator */}
+        <motion.div
+          className="absolute inset-0 border-2 rounded-full"
+          animate={{
+            borderColor: isOpen ? '#C83C2F' : 'rgba(249, 249, 249, 0.3)',
+            rotate: isOpen ? 180 : 0,
+            scale: isOpen ? 1.1 : 1
+          }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </motion.button>
 
       <AnimatePresence>
         {isOpen && (
