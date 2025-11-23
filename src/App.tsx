@@ -9,7 +9,7 @@ import { Story } from './types';
 const App = () => {
   // Default to false for Production (Webflow triggers it).
   // If you are previewing locally and see nothing, change this to true.
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
   const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState('');
@@ -93,11 +93,34 @@ const App = () => {
     <>
       <CursorTrail />
 
+      {/* CUSTOM HAMBURGER BUTTON */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-6 right-6 z-[10000] p-4 group cursor-none mix-blend-difference text-white"
+        aria-label="Toggle Menu"
+      >
+        <div className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5">
+          <motion.span
+            animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+            className="w-full h-0.5 bg-current block transition-all duration-300"
+          />
+          <motion.span
+            animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+            className="w-full h-0.5 bg-current block transition-all duration-300"
+          />
+          <motion.span
+            animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+            className="w-full h-0.5 bg-current block transition-all duration-300"
+          />
+        </div>
+      </button>
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-bg text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 cursor-none"
+            // Fixed background color to bg-brand-dark
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 cursor-none pointer-events-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
