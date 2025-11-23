@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Linkedin, Instagram } from 'lucide-react';
 import StoryCard from './components/StoryCard';
 import type { Story } from './types';
@@ -28,6 +29,46 @@ const sampleStories: Story[] = [
 
 const navLinks = ["What's our Story", 'What We Do', 'Get in Touch'];
 
+// Animation variants for staggered waterfall effect
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.22, 1, 0.36, 1] as const,
+      when: "beforeChildren" as const
+    }
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.3 }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1] as const // The "Luxury" curve
+    }
+  }
+};
+
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -47,6 +88,22 @@ export default function App() {
 
   const handleClose = () => {
     setIsOpen(false);
+
+    // Dispatch event to close/reset the Webflow hamburger button
+    const closeEvent = new CustomEvent('closeMenu', {
+      detail: { isOpen: false }
+    });
+    window.dispatchEvent(closeEvent);
+
+    // Also try to click the hamburger to reset its animation state
+    const hamburger = document.querySelector('.menu-burger') ||
+                      document.querySelector('.w-nav-button') ||
+                      document.querySelector('.hamburger-trigger') ||
+                      document.querySelector('[data-nav-trigger]');
+
+    if (hamburger && hamburger instanceof HTMLElement) {
+      hamburger.click();
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -56,11 +113,16 @@ export default function App() {
     setEmail('');
   };
 
-  // Don't render if not open
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#282828] text-[#F9F9F9] overflow-hidden">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-[9999] bg-[#282828] text-[#F9F9F9] overflow-hidden"
+          variants={overlayVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
       {/* Close Button */}
       <button
         onClick={handleClose}
@@ -91,21 +153,32 @@ export default function App() {
             </div>
 
             {/* Main Nav Links */}
-            <nav className="space-y-4">
+            <motion.nav
+              className="space-y-4"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
               {navLinks.map((link) => (
-                <a
+                <motion.a
                   key={link}
                   href="#"
                   className="block text-5xl lg:text-7xl font-serif tracking-tight hover:text-[#C83C2F] transition-colors duration-300"
                   style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                  variants={fadeUp}
                 >
                   {link}
-                </a>
+                </motion.a>
               ))}
-            </nav>
+            </motion.nav>
 
             {/* Start Your Journey Button */}
-            <div className="pt-6">
+            <motion.div
+              className="pt-6"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+            >
               <a
                 href="mailto:hello@protagonist.ink"
                 className="group inline-block bg-[#C83C2F] hover:bg-[#A02F23] text-[#F9F9F9] px-8 py-4 rounded-full transition-all duration-300"
@@ -114,7 +187,7 @@ export default function App() {
                 <span className="group-hover:hidden">Start Your Journey</span>
                 <span className="hidden group-hover:inline">hello@protagonist.ink</span>
               </a>
-            </div>
+            </motion.div>
           </div>
 
           {/* Bottom Right Section - Email Form + Social Icons */}
@@ -156,12 +229,21 @@ export default function App() {
         </div>
 
         {/* Right Column - Story Cards from Blog CMS */}
-        <div className="flex-1 overflow-y-auto p-8 lg:p-16 space-y-6">
+        <motion.div
+          className="flex-1 overflow-y-auto p-8 lg:p-16 space-y-6"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {sampleStories.map((story) => (
-            <StoryCard key={story.id} story={story} />
+            <motion.div key={story.id} variants={fadeUp}>
+              <StoryCard story={story} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

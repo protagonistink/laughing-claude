@@ -96,6 +96,22 @@
           });
           window.dispatchEvent(event);
         });
+
+        // Listen for close event from React
+        window.addEventListener('closeMenu', function(event) {
+          console.log('✅ Close menu event received');
+
+          // If the hamburger has a class that indicates it's open, remove it
+          // Common Webflow classes for open state
+          if (hamburger.classList.contains('w--open')) {
+            hamburger.classList.remove('w--open');
+          }
+
+          // Reset aria-expanded if present
+          if (hamburger.hasAttribute('aria-expanded')) {
+            hamburger.setAttribute('aria-expanded', 'false');
+          }
+        });
       });
     </script>
   </body>
