@@ -12,18 +12,21 @@ const sampleStories: Story[] = [
     id: '1',
     title: 'Woods Hole Film Festival x Protagonist',
     body: 'Featured Story',
+    category: 'Film Festival',
     imageUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=600&fit=crop',
   },
   {
     id: '2',
     title: 'The M.A.D School x Protagonist',
     body: 'Featured Story',
+    category: 'Education',
     imageUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=600&fit=crop',
   },
   {
     id: '3',
     title: 'Documenting the greats',
     body: 'Featured Story',
+    category: 'Documentary',
     imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop',
   },
 ];
@@ -243,9 +246,9 @@ export default function App() {
           animate="visible"
         >
           <div className="flex flex-col space-y-2">
-            {sampleStories.map((story) => (
+            {sampleStories.map((story, index) => (
               <motion.div key={story.id} variants={fadeUp}>
-                <StoryCard story={story} />
+                <StoryCard story={story} index={index} />
               </motion.div>
             ))}
           </div>

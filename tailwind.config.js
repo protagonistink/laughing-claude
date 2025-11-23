@@ -9,7 +9,9 @@ export default {
       colors: {
         'brand-dark': '#282828',
         'brand-light': '#F9F9F9',
+        'brand-text': '#F9F9F9',
         'brand-red': '#C83C2F',
+        'brand-highlightRed': '#C83C2F',
         'brand-blue': '#1E3F66',
       },
       fontFamily: {
