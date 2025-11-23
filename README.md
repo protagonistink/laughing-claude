@@ -4,10 +4,15 @@ A full-screen, cinematic navigation overlay for Webflow sites. Features elegant 
 
 ## ✨ Features
 
-- **Full-screen overlay** that appears on hamburger click
+- **Full-screen cinematic overlay** that appears on hamburger click
 - **Two-column layout:**
-  - Left: Navigation links, newsletter signup, social links
-  - Right: Scrollable story cards with hover effects
+  - Left: Logo (upper left), large serif nav links, "Start Your Journey" button, email signup + social icons (bottom right)
+  - Right: Scrollable story cards with movie poster-style images (2:3 aspect ratio)
+- **Interactive elements:**
+  - "Start Your Journey" button reveals email on hover
+  - LinkedIn & Instagram icons with hover effects
+  - Story cards with smooth hover animations
+- **Webflow CMS ready:** Pull blog posts dynamically from your Webflow collections
 - **Brand colors:** Dark charcoal (#282828), Red highlights (#C83C2F)
 - **Typography:** Cormorant Garamond (serif) + Karla (sans-serif)
 - **Responsive design** with mobile optimizations
@@ -105,16 +110,39 @@ Or use Tailwind classes defined in `tailwind.config.js`:
 
 ### Change Navigation Links
 
-Edit the arrays in `src/App.tsx`:
+Edit the array in `src/App.tsx`:
 
 ```typescript
-const navLinks = ['Case Studies', 'Programs', 'Arts & Culture'];
-const bottomLinks = ['Work with us', 'Team', 'Careers', 'Press'];
+const navLinks = ["What's our Story", 'What We Do', 'Get in Touch'];
 ```
 
-### Add Real Story Data
+### Add Your Logo
 
-Replace `sampleStories` in `src/App.tsx` with your real data:
+Replace the placeholder logo in `src/App.tsx` (line ~82):
+
+```tsx
+<img
+  src="/path/to/your-logo.svg"
+  alt="Protagonist Ink"
+  className="h-8 lg:h-10"
+/>
+```
+
+Upload your logo to your Netlify site or use a Webflow asset URL.
+
+### Connect to Webflow CMS (Blog Posts)
+
+**📖 See complete guide:** [CMS_INTEGRATION.md](./CMS_INTEGRATION.md)
+
+The story cards are designed to pull from your Webflow blog CMS with movie poster-style images (2:3 aspect ratio).
+
+Quick setup:
+1. Get your Webflow API token
+2. Add credentials to `.env`
+3. Create `src/services/webflowService.ts` (see CMS guide)
+4. Update `src/App.tsx` to fetch posts on load
+
+### Add Real Story Data (Manual)
 
 ```typescript
 const sampleStories: Story[] = [
