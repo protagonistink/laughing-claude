@@ -1,266 +1,295 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Linkedin, Instagram } from 'lucide-react';
-import StoryCard from './components/StoryCard';
-import CursorTrail from './components/CursorTrail';
-import type { Story } from './types';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { CloseIcon, MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
+import { StoryCard } from './components/StoryCard';
+import { CustomCursor } from './components/CustomCursor';
+import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
+import { Story } from './types';
 
-// TODO: Replace with Webflow CMS integration
-// Fetch from your Webflow blog collection via API
-const sampleStories: Story[] = [
-  {
-    id: '1',
-    title: 'Woods Hole Film Festival x Protagonist',
-    body: 'Featured Story',
-    category: 'Film Festival',
-    imageUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=600&fit=crop',
-  },
-  {
-    id: '2',
-    title: 'The M.A.D School x Protagonist',
-    body: 'Featured Story',
-    category: 'Education',
-    imageUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=600&fit=crop',
-  },
-  {
-    id: '3',
-    title: 'Documenting the greats',
-    body: 'Featured Story',
-    category: 'Documentary',
-    imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop',
-  },
-];
-
-const navItems = [
-  { label: "What's our Story", href: "#story" },
-  { label: 'What We Do', href: "#services" },
-  { label: 'Get in Touch', href: "#contact" }
-];
-
-// Animation variants for staggered waterfall effect
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: [0.22, 1, 0.36, 1] as const,
-      when: "beforeChildren" as const
-    }
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.3 }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.22, 1, 0.36, 1] as const // The "Luxury" curve
-    }
-  }
-};
-
-export default function App() {
-  const [isOpen, setIsOpen] = useState(false);
+const App = () => {
+  // Default to false for Production (Webflow triggers it).
+  // If you are previewing locally and see nothing, change this to true.
+  const [isOpen, setIsOpen] = useState(true);
+  const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState('');
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
+  // Interaction States
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [isWorkHovered, setIsWorkHovered] = useState(false);
+
+  // --- WEBFLOW EVENT LISTENER ---
   useEffect(() => {
-    // Listen for toggle event from Webflow hamburger
     const handleToggle = (event: CustomEvent) => {
       setIsOpen(event.detail.isOpen);
     };
 
     window.addEventListener('toggleMenu', handleToggle as EventListener);
-
-    return () => {
-      window.removeEventListener('toggleMenu', handleToggle as EventListener);
-    };
+    return () => window.removeEventListener('toggleMenu', handleToggle as EventListener);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
+  };
 
-    // Dispatch event to close/reset the Webflow hamburger button
-    const closeEvent = new CustomEvent('closeMenu', {
-      detail: { isOpen: false }
-    });
-    window.dispatchEvent(closeEvent);
-
-    // Also try to click the hamburger to reset its animation state
-    const hamburger = document.querySelector('.menu-burger') ||
-                      document.querySelector('.w-nav-button') ||
-                      document.querySelector('.hamburger-trigger') ||
-                      document.querySelector('[data-nav-trigger]');
-
-    if (hamburger && hamburger instanceof HTMLElement) {
-      hamburger.click();
+  const handleGenerate = async () => {
+    if (isGenerating) return;
+    setIsGenerating(true);
+    try {
+      const newStories = await generateCreativeStories();
+      setStories(newStories);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Newsletter signup:', email);
-    // Add your newsletter logic here
-    setEmail('');
+  const navItems = [
+    { label: "What's our Story", href: "#" },
+    { label: "What We Do", href: "#" },
+    { label: "Get in Touch", href: "#" }
+  ];
+
+  // Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.5 }
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.5, delay: 0.2 }
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: { staggerChildren: 0.05, staggerDirection: -1 }
+    }
+  };
+
+  const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+    },
+    exit: {
+      opacity: 0,
+      y: 20,
+      transition: { duration: 0.3 }
+    }
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[9999] bg-[#282828] text-[#F9F9F9] overflow-hidden"
-          variants={overlayVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-      {/* Cursor Trail Effect */}
-      <CursorTrail />
+    <>
+      <CustomCursor />
 
-      {/* Close Button */}
-      <button
-        onClick={handleClose}
-        className="absolute top-8 right-8 z-50 text-[#F9F9F9] hover:text-[#C83C2F] transition-colors duration-300"
-        aria-label="Close menu"
-      >
-        <X size={32} strokeWidth={1.5} />
-      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="app-container"
+            className="fixed inset-0 min-h-screen w-full bg-brand-bg text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 cursor-none"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={containerVariants}
+          >
+            {/* AMBIENT LIGHTING BACKGROUND */}
+            <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-highlightRed/5 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none z-0" />
 
-      <div className="h-full flex flex-col lg:flex-row">
-        {/* Left Column - Navigation */}
-        <div className="flex-1 flex flex-col justify-between p-8 lg:p-16 overflow-y-auto">
-          {/* Top Section */}
-          <div className="space-y-12">
-            {/* Logo */}
-            <div className="mb-12">
-              <h1 className="text-2xl lg:text-3xl font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Protagonist Ink
-              </h1>
-            </div>
+            {/* BACKGROUND TEXTURE */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+            }} />
 
-            {/* Main Nav Links */}
-            <motion.nav
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="flex flex-col mb-16 md:pl-16 lg:pl-40"
-              onMouseLeave={() => setHoveredNav(null)}
-            >
-              {navItems.map((item) => (
-                <motion.a
-                  key={item.label}
-                  href={item.href}
-                  variants={fadeUp}
-                  className="group block w-fit relative"
-                  onMouseEnter={() => setHoveredNav(item.label)}
-                  animate={{
-                    opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
-                  }}
-                  transition={{ duration: 0.3 }}
+            {/* HEADER */}
+            <header className="flex justify-between items-center z-20 mb-8 md:mb-12 relative shrink-0">
+              <motion.a
+                href="/"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="block group cursor-none"
+              >
+                <img
+                  src="https://cdn.prod.website-files.com/687d94764e8dc11e6920a79b/687d9526a88d9d4894f0d742_white_wordmark_trans.png"
+                  alt="Protagonist Ink"
+                  className="h-8 lg:h-10 opacity-90 group-hover:opacity-100 transition-opacity"
+                />
+              </motion.a>
+
+              <motion.button
+                onClick={handleClose}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                whileHover={{ rotate: 90 }}
+                className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-none text-white hover:text-brand-highlightRed"
+              >
+                <CloseIcon className="w-8 h-8" />
+              </motion.button>
+            </header>
+
+            {/* MAIN GRID */}
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden">
+
+              {/* LEFT COLUMN: Main Navigation */}
+              {/* Added lg:pl-40 to create the deep indentation requested */}
+              <div className="lg:col-span-7 flex flex-col justify-center md:pl-16 lg:pl-40">
+                <motion.nav
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="flex flex-col mb-16"
+                  onMouseLeave={() => setHoveredNav(null)}
                 >
-                  <span
-                    className="block text-5xl md:text-7xl lg:text-8xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-[#C83C2F] pb-2"
-                    style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                  {navItems.map((item) => (
+                    <motion.a
+                      key={item.label}
+                      href={item.href}
+                      variants={fadeUp}
+                      className="group block w-fit cursor-none relative"
+                      onMouseEnter={() => setHoveredNav(item.label)}
+                      animate={{
+                        opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <span
+                        // Updated to lg:text-9xl and leading-[0.9] for massive cinematic typography
+                        className="block text-5xl md:text-7xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
+                      >
+                        {item.label}
+                      </span>
+                    </motion.a>
+                  ))}
+                </motion.nav>
+
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="flex flex-wrap items-center gap-8 pl-1"
+                >
+                  <motion.a
+                    href="mailto:hello@protagonist.ink"
+                    layout
+                    variants={fadeUp}
+                    onMouseEnter={() => setIsWorkHovered(true)}
+                    onMouseLeave={() => setIsWorkHovered(false)}
+                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-none"
                   >
-                    {item.label}
-                  </span>
-                </motion.a>
-              ))}
-            </motion.nav>
+                    <AnimatePresence mode="wait" initial={false}>
+                      {isWorkHovered ? (
+                        <motion.span
+                          key="email"
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          exit={{ y: -20, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          hello@protagonist.ink
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="text"
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          exit={{ y: -20, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          Start Your Journey
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.a>
+                </motion.div>
+              </div>
 
-            {/* Start Your Journey Button */}
-            <motion.div
-              className="pt-6"
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
+              {/* RIGHT COLUMN: Stories List */}
+              {/* Hidden on tablet/mobile */}
+              <div className="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-4 md:space-y-6 relative">
+                <motion.button
+                    onClick={handleGenerate}
+                    disabled={isGenerating}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute -top-16 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
+                  >
+                    <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
+                    {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
+                  </motion.button>
+
+                  <AnimatePresence mode="wait">
+                    {stories.map((story, index) => (
+                      <motion.div
+                        key={story.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                         <StoryCard story={story} index={index} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+              </div>
+            </main>
+
+            {/* FOOTER */}
+            {/* Moved to bottom right: justify-end items-end */}
+            <motion.footer
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
             >
-              <a
-                href="mailto:hello@protagonist.ink"
-                className="group inline-block bg-[#C83C2F] hover:bg-[#A02F23] text-[#F9F9F9] px-8 py-4 rounded-full transition-all duration-300"
-                style={{ fontFamily: 'Karla, sans-serif' }}
-              >
-                <span className="group-hover:hidden">Start Your Journey</span>
-                <span className="hidden group-hover:inline">hello@protagonist.ink</span>
-              </a>
-            </motion.div>
-          </div>
 
-          {/* Bottom Right Section - Email Form + Social Icons */}
-          <div className="flex items-end justify-end gap-6 mt-12">
-            {/* Newsletter Form */}
-            <form onSubmit={handleSubmit} className="max-w-xs">
-              <input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent border border-[#F9F9F9]/30 rounded-full px-6 py-3 text-sm focus:outline-none focus:border-[#C83C2F] transition-colors placeholder:text-[#F9F9F9]/50"
-                style={{ fontFamily: 'Karla, sans-serif' }}
-              />
-            </form>
+              {/* Newsletter */}
+              <div className="hidden md:flex w-full md:w-auto flex-col items-end">
+                <p className="text-xs uppercase tracking-widest mb-4 text-white/50 font-sans">Become a Protagonist</p>
+                <div className="relative w-full md:w-80">
+                  <MailIcon className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email"
+                    className="w-full bg-transparent border-b border-white/20 rounded-none py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-highlightRed transition-colors placeholder:text-white/20 font-sans cursor-none text-right md:text-left"
+                  />
+                </div>
+              </div>
 
-            {/* Social Icons */}
-            <div className="flex gap-4 items-center">
-              <a
-                href="https://linkedin.com/company/protagonist-ink"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#F9F9F9] hover:text-[#C83C2F] transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={24} />
-              </a>
-              <a
-                href="https://instagram.com/protagonist.ink"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#F9F9F9] hover:text-[#C83C2F] transition-colors duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram size={24} />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Story Cards from Blog CMS */}
-        <motion.div
-          className="flex-1 overflow-y-auto p-8 lg:p-16"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="flex flex-col space-y-2">
-            {sampleStories.map((story, index) => (
-              <motion.div key={story.id} variants={fadeUp}>
-                <StoryCard story={story} index={index} />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              {/* Socials */}
+              <div className="flex gap-6 text-white/60 items-center pb-3 w-full md:w-auto justify-end">
+                <a href="https://linkedin.com/company/protagonistink" target="_blank" className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none">
+                  <LinkedinIcon className="w-5 h-5" />
+                </a>
+                <a href="https://instagram.com/protagonist.ink" target="_blank" className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none">
+                  <InstagramIcon className="w-5 h-5" />
+                </a>
+              </div>
+            </motion.footer>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
-}
+};
+
+export default App;
