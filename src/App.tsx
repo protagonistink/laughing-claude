@@ -96,7 +96,7 @@ const App = () => {
       {/* CUSTOM HAMBURGER BUTTON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-6 right-6 z-[10000] p-4 group cursor-none mix-blend-difference text-white"
+        className="fixed top-6 right-6 z-[10001] p-4 group cursor-none mix-blend-difference text-white pointer-events-auto"
         aria-label="Toggle Menu"
       >
         <div className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5">
