@@ -34,10 +34,10 @@ export default function CursorTrail() {
         timestamp: Date.now()
       });
 
-      // Keep only recent points (last 5 seconds)
+      // Keep only recent points (last 1.5 seconds)
       const now = Date.now();
       pointsRef.current = pointsRef.current.filter(
-        point => now - point.timestamp < 5000
+        point => now - point.timestamp < 1500
       );
     };
 
@@ -64,7 +64,7 @@ export default function CursorTrail() {
         const point = points[i];
         const nextPoint = points[i + 1];
         const age = now - point.timestamp;
-        const opacity = Math.max(0, 1 - age / 5000);
+        const opacity = Math.max(0, 1 - age / 1500);
 
         ctx.beginPath();
         ctx.moveTo(point.x, point.y);
