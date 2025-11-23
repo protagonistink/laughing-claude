@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { CloseIcon, MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
+import { MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
-import { CustomCursor } from './components/CustomCursor';
+import CursorTrail from './components/CursorTrail';
 import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
 import { Story } from './types';
 
@@ -28,9 +28,7 @@ const App = () => {
     return () => window.removeEventListener('toggleMenu', handleToggle as EventListener);
   }, []);
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+
 
   const handleGenerate = async () => {
     if (isGenerating) return;
@@ -93,7 +91,7 @@ const App = () => {
 
   return (
     <>
-      <CustomCursor />
+      <CursorTrail />
 
       <AnimatePresence>
         {isOpen && (
@@ -114,39 +112,14 @@ const App = () => {
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
             }} />
 
-            {/* HEADER */}
-            <header className="flex justify-between items-center z-20 mb-8 md:mb-12 relative shrink-0">
-              <motion.a
-                href="/"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="block group cursor-none"
-              >
-                <img
-                  src="https://cdn.prod.website-files.com/687d94764e8dc11e6920a79b/687d9526a88d9d4894f0d742_white_wordmark_trans.png"
-                  alt="Protagonist Ink"
-                  className="h-8 lg:h-10 opacity-90 group-hover:opacity-100 transition-opacity"
-                />
-              </motion.a>
-
-              <motion.button
-                onClick={handleClose}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                whileHover={{ rotate: 90 }}
-                className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-none text-white hover:text-brand-highlightRed"
-              >
-                <CloseIcon className="w-8 h-8" />
-              </motion.button>
-            </header>
+            {/* HEADER REMOVED - Handled by Webflow */}
 
             {/* MAIN GRID */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden">
+            {/* Added pt-32 to push content down below Webflow header */}
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-32">
 
               {/* LEFT COLUMN: Main Navigation */}
-              {/* Added lg:pl-40 to create the deep indentation requested */}
-              <div className="lg:col-span-7 flex flex-col justify-center md:pl-16 lg:pl-40">
+              <div className="lg:col-span-7 flex flex-col justify-center">
                 <motion.nav
                   variants={staggerContainer}
                   initial="hidden"
@@ -223,30 +196,30 @@ const App = () => {
               {/* Hidden on tablet/mobile */}
               <div className="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-4 md:space-y-6 relative">
                 <motion.button
-                    onClick={handleGenerate}
-                    disabled={isGenerating}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute -top-16 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
-                  >
-                    <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
-                    {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
-                  </motion.button>
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute -top-16 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
+                >
+                  <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
+                  {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
+                </motion.button>
 
-                  <AnimatePresence mode="wait">
-                    {stories.map((story, index) => (
-                      <motion.div
-                        key={story.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                         <StoryCard story={story} index={index} />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {stories.map((story, index) => (
+                    <motion.div
+                      key={story.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <StoryCard story={story} index={index} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             </main>
 
