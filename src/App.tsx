@@ -104,15 +104,15 @@ const App = () => {
         <div className="relative w-8 h-6 flex flex-col justify-between items-center">
           <motion.span
             animate={isOpen ? { rotate: 45, y: 11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-white block transition-all duration-300 origin-center shadow-sm"
+            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 origin-center shadow-sm"
           />
           <motion.span
             animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="w-full h-0.5 bg-white block transition-all duration-300 shadow-sm"
+            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 shadow-sm"
           />
           <motion.span
             animate={isOpen ? { rotate: -45, y: -11 } : { rotate: 0, y: 0 }}
-            className="w-full h-0.5 bg-white block transition-all duration-300 origin-center shadow-sm"
+            className="w-full h-0.5 bg-[#F9F9F9] block transition-all duration-300 origin-center shadow-sm"
           />
         </div>
       </button>
