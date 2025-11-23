@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Linkedin, Instagram } from 'lucide-react';
 import StoryCard from './components/StoryCard';
+import CursorTrail from './components/CursorTrail';
 import type { Story } from './types';
 
 // TODO: Replace with Webflow CMS integration
@@ -123,6 +124,9 @@ export default function App() {
           animate="visible"
           exit="exit"
         >
+      {/* Cursor Trail Effect */}
+      <CursorTrail />
+
       {/* Close Button */}
       <button
         onClick={handleClose}
@@ -159,12 +163,15 @@ export default function App() {
               initial="hidden"
               animate="visible"
             >
-              {navLinks.map((link) => (
+              {navLinks.map((link, index) => (
                 <motion.a
                   key={link}
                   href="#"
                   className="block text-5xl lg:text-7xl font-serif tracking-tight hover:text-[#C83C2F] transition-colors duration-300"
-                  style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                  style={{
+                    fontFamily: 'Cormorant Garamond, serif',
+                    paddingLeft: `${index * 2}rem`
+                  }}
                   variants={fadeUp}
                 >
                   {link}
@@ -230,16 +237,18 @@ export default function App() {
 
         {/* Right Column - Story Cards from Blog CMS */}
         <motion.div
-          className="flex-1 overflow-y-auto p-8 lg:p-16 space-y-6"
+          className="flex-1 overflow-y-auto p-8 lg:p-16"
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
         >
-          {sampleStories.map((story) => (
-            <motion.div key={story.id} variants={fadeUp}>
-              <StoryCard story={story} />
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {sampleStories.map((story) => (
+              <motion.div key={story.id} variants={fadeUp}>
+                <StoryCard story={story} />
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
         </motion.div>
