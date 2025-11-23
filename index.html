@@ -4,9 +4,98 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Protagonist Ink Menu</title>
+    <style>
+      /* Demo hamburger button for local testing */
+      .demo-hamburger {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: 40px;
+        height: 40px;
+        background: #282828;
+        border: 2px solid #F9F9F9;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 8px;
+        transition: all 0.3s ease;
+      }
+      .demo-hamburger:hover {
+        background: #C83C2F;
+        border-color: #C83C2F;
+      }
+      .demo-hamburger span {
+        width: 100%;
+        height: 2px;
+        background: #F9F9F9;
+        display: block;
+        transition: all 0.3s ease;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .demo-content {
+        padding: 80px 20px 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
+    <!-- Demo Hamburger Button (for local testing) -->
+    <button class="demo-hamburger hamburger-trigger" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Demo content -->
+    <div class="demo-content">
+      <h1>Protagonist Ink</h1>
+      <p>Click the hamburger menu in the top-right corner to see the overlay.</p>
+      <p style="color: #666; font-size: 14px; margin-top: 40px;">
+        Note: This hamburger button is for local testing only. In Webflow, you'll use your own navbar hamburger.
+      </p>
+    </div>
+
+    <!-- React App Root -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Hamburger Integration Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Find hamburger button - adjust selector to match your element
+        const hamburger = document.querySelector('.w-nav-button') ||
+                          document.querySelector('.hamburger-trigger') ||
+                          document.querySelector('[data-nav-trigger]');
+
+        if (!hamburger) {
+          console.error('❌ Hamburger button not found. Check your selector.');
+          return;
+        }
+
+        console.log('✅ Hamburger found:', hamburger);
+
+        // Trigger React overlay on click
+        hamburger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Dispatch custom event that React listens to
+          const event = new CustomEvent('toggleMenu', {
+            detail: { isOpen: true }
+          });
+          window.dispatchEvent(event);
+        });
+      });
+    </script>
   </body>
 </html>
