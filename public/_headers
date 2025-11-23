@@ -1,17 +1,24 @@
 # CORS headers for Webflow integration
 /*
   Access-Control-Allow-Origin: *
-  Access-Control-Allow-Methods: GET, OPTIONS
-  Access-Control-Allow-Headers: Content-Type
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: *
+  X-Content-Type-Options: nosniff
 
-# JavaScript modules
+# JavaScript modules - specific CORS for scripts
 /assets/*.js
   Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, OPTIONS
+  Access-Control-Allow-Headers: *
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
 # CSS files
 /assets/*.css
   Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, OPTIONS
+  Access-Control-Allow-Headers: *
   Content-Type: text/css; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
