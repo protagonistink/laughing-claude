@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { MailIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
@@ -22,7 +22,7 @@ const App = () => {
   // --- WEBFLOW EVENT LISTENER ---
   // Webflow hamburger opens menu
   useEffect(() => {
-    const handleToggle = (event: any) => {
+    const handleToggle = () => {
       // Explicitly set to open when Webflow nav is clicked
       setIsOpen(true);
     };
