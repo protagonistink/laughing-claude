@@ -79,7 +79,7 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
                 category: item.fieldData.category || 'Featured Story',
                 imageUrl: item.fieldData['main-image']?.url || 'https://placehold.co/600x400/1a1a1a/ffffff?text=No+Image',
                 body: item.fieldData['post-summary'] || '',
-                url: `/blog/${item.fieldData.slug}`,
+                url: `/news/${item.fieldData.slug}`,
             }))
             .slice(0, 3); // Limit to 3 stories
 
