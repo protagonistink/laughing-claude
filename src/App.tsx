@@ -4,6 +4,7 @@ import { MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './component
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
 import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
+import { fetchWebflowStories } from './services/webflowService';
 import { Story } from './types';
 
 const App = () => {
@@ -27,6 +28,15 @@ const App = () => {
 
     window.addEventListener('toggleMenu', handleToggle);
     return () => window.removeEventListener('toggleMenu', handleToggle);
+  }, []);
+
+  // Fetch Stories from Webflow on Mount
+  useEffect(() => {
+    const loadStories = async () => {
+      const webflowStories = await fetchWebflowStories();
+      setStories(webflowStories);
+    };
+    loadStories();
   }, []);
 
   // Lock Body Scroll when Menu is Open
