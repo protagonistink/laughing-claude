@@ -44,12 +44,30 @@ const App = () => {
     loadStories();
   }, []);
 
-  // Lock Body Scroll when Menu is Open
+  // Lock Body Scroll when Menu is Open + Hide/Show Hamburger
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Hide the Webflow hamburger when menu is open
+      const hamburger = document.querySelector('.menu-burger') ||
+                        document.querySelector('.w-nav-button') ||
+                        document.querySelector('.hamburger-trigger') ||
+                        document.querySelector('[data-nav-trigger]');
+      if (hamburger && hamburger instanceof HTMLElement) {
+        hamburger.style.opacity = '0';
+        hamburger.style.pointerEvents = 'none';
+      }
     } else {
       document.body.style.overflow = '';
+      // Show the Webflow hamburger when menu is closed
+      const hamburger = document.querySelector('.menu-burger') ||
+                        document.querySelector('.w-nav-button') ||
+                        document.querySelector('.hamburger-trigger') ||
+                        document.querySelector('[data-nav-trigger]');
+      if (hamburger && hamburger instanceof HTMLElement) {
+        hamburger.style.opacity = '1';
+        hamburger.style.pointerEvents = 'auto';
+      }
     }
     return () => {
       document.body.style.overflow = '';
@@ -58,9 +76,6 @@ const App = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-
-    // Optional: tell Webflow the menu has closed if you want
-    // to wire Lottie/IX back to the burger state.
     window.dispatchEvent(new CustomEvent('menuClosed'));
   };
 
@@ -114,26 +129,26 @@ const App = () => {
 
   return (
     <>
-      <CursorTrail />
-
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12"
             initial="hidden"
             animate="visible"
             exit="exit"
             variants={containerVariants}
           >
-            {/* CLOSE BUTTON */}
+            {/* Cursor Trail - Only on menu overlay */}
+            <CursorTrail />
+
+            {/* CLOSE BUTTON - Desktop (Top Right, aligned with hamburger) */}
             <button
               onClick={handleClose}
-              className="absolute top-8 right-8 z-[10000] text-white hover:text-brand-highlightRed transition-colors lg:hidden"
+              className="fixed top-6 right-6 md:top-8 md:right-8 z-[10000] text-[#f9f9f9] opacity-90 hover:opacity-100 hover:rotate-90 transition-all duration-300 cursor-pointer group"
               aria-label="Close menu"
-              style={{ cursor: 'pointer' }}
             >
-              <span className="block text-5xl leading-none">×</span>
+              <span className="block text-4xl md:text-5xl leading-none">×</span>
             </button>
 
             {/* AMBIENT LIGHTING BACKGROUND */}
@@ -166,8 +181,16 @@ const App = () => {
                       key={item.label}
                       href={item.href}
                       variants={fadeUp}
-                      className="group block w-fit cursor-pointer relative"
+                      className="group block w-fit cursor-pointer relative pointer-events-auto"
                       onMouseEnter={() => setHoveredNav(item.label)}
+                      onClick={(e) => {
+                        // If href is just "#", prevent default and close menu
+                        if (item.href === '#') {
+                          e.preventDefault();
+                        }
+                        // Close menu on any click
+                        handleClose();
+                      }}
                       animate={{
                         opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
                       }}
@@ -230,18 +253,6 @@ const App = () => {
 
               {/* RIGHT COLUMN: Stories (Desktop Only) */}
               <div className="hidden lg:flex lg:col-span-5 relative">
-                {/* Desktop Close Button - Aligned with Stories */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl flex justify-end z-[10000]">
-                  <button
-                    onClick={handleClose}
-                    className="text-white hover:text-brand-highlightRed transition-colors"
-                    aria-label="Close menu"
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <span className="block text-5xl leading-none">×</span>
-                  </button>
-                </div>
-
                 {/* Centered Stories Panel */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-4 pointer-events-auto">
