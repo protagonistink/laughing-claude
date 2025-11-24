@@ -82,17 +82,32 @@
 
         console.log('✅ Found', hamburgers.length, 'hamburger button(s)');
 
+        // Track menu state
+        let isMenuOpen = false;
+
         // Attach click event to ALL hamburger buttons
         hamburgers.forEach(function(hamburger) {
           hamburger.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
+            // Don't prevent default - let Webflow's Lottie animation play
             console.log('🎯 Hamburger clicked, dispatching toggleMenu event');
+
+            // Toggle menu state
+            isMenuOpen = !isMenuOpen;
+
+            // Find and control the Lottie animation
+            const lottieElement = hamburger.querySelector('[data-animation-type="lottie"]') ||
+                                 (hamburger.hasAttribute('data-animation-type') ? hamburger : null);
+
+            if (lottieElement && window.Webflow) {
+              // Let Webflow handle the animation direction
+              const currentDirection = lottieElement.getAttribute('data-direction');
+              const newDirection = isMenuOpen ? '1' : '-1';
+              lottieElement.setAttribute('data-direction', newDirection);
+            }
 
             // Dispatch custom event that React listens to
             const event = new CustomEvent('toggleMenu', {
-              detail: { isOpen: true }
+              detail: { isOpen: isMenuOpen }
             });
             window.dispatchEvent(event);
           });
@@ -101,6 +116,9 @@
         // Listen for close event from React
         window.addEventListener('closeMenu', function(event) {
           console.log('✅ Close menu event received');
+
+          // Update menu state
+          isMenuOpen = false;
 
           // Reset ALL hamburger buttons
           hamburgers.forEach(function(hamburger) {
@@ -112,6 +130,22 @@
             // Reset aria-expanded if present
             if (hamburger.hasAttribute('aria-expanded')) {
               hamburger.setAttribute('aria-expanded', 'false');
+            }
+
+            // Play Lottie animation backwards (X → hamburger)
+            const lottieElement = hamburger.querySelector('[data-animation-type="lottie"]') ||
+                                 (hamburger.hasAttribute('data-animation-type') ? hamburger : null);
+
+            if (lottieElement) {
+              lottieElement.setAttribute('data-direction', '-1');
+              // Trigger the animation if Webflow is available
+              if (window.Webflow && window.Webflow.require) {
+                const lottie = window.Webflow.require('lottie');
+                if (lottie) {
+                  lottie.setDirection(-1, lottieElement);
+                  lottie.play(lottieElement);
+                }
+              }
             }
           });
         });
