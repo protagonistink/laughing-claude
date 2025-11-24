@@ -20,15 +20,11 @@ interface WebflowItem {
     };
 }
 
-interface WebflowResponse {
-    items: WebflowItem[];
-}
 
 // Configuration
-// NOTE: Calling api.webflow.com directly from the browser will fail due to CORS.
-// The recommended approach for static sites is to create a page in Webflow (e.g., /stories-json)
-// that renders the collection as a JSON object, and fetch that URL instead.
-const WEBFLOW_ENDPOINT = 'https://protagonistink.webflow.io/stories-json';
+// We fetch the Webflow page that renders the collection as JSON.
+// Since Webflow wraps it in HTML, we must parse the text to extract the JSON.
+const WEBFLOW_ENDPOINT = 'https://protagonistink.webflow.io/json-stories';
 
 export const fetchWebflowStories = async (): Promise<Story[]> => {
     try {
@@ -39,17 +35,42 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
             throw new Error(`Failed to fetch stories: ${response.statusText}`);
         }
 
-        const data: WebflowResponse = await response.json();
+        // Webflow returns HTML, so we get text first
+        const htmlText = await response.text();
 
-        if (!data.items) {
-            console.warn('No items found in Webflow response');
+        // Regex to find the JSON blocks inside the w-embed divs
+        // We look for the pattern: { "items": [ ... ] }
+        const jsonRegex = /{\s*"items":\s*\[[\s\S]*?\]\s*}/g;
+        const matches = htmlText.match(jsonRegex);
+
+        if (!matches) {
+            console.warn('No JSON data found in Webflow response');
+            return MOCK_STORIES;
+        }
+
+        const allItems: WebflowItem[] = [];
+
+        // Parse each match and aggregate items
+        matches.forEach(jsonStr => {
+            try {
+                // Clean up any potential HTML entities if necessary (though usually script tags handle this)
+                const data = JSON.parse(jsonStr);
+                if (data.items && Array.isArray(data.items)) {
+                    allItems.push(...data.items);
+                }
+            } catch (e) {
+                console.error('Failed to parse JSON block:', e);
+            }
+        });
+
+        if (allItems.length === 0) {
             return MOCK_STORIES;
         }
 
         // Map Webflow items to our Story type
-        return data.items
+        return allItems
             // Optional: Filter by 'featured' if you only want featured stories
-            // .filter(item => item.fieldData.featured)
+            // .filter(item => item.fieldData.featured) 
             // Optional: Sort by 'sort-order'
             // .sort((a, b) => (a.fieldData['sort-order'] || 0) - (b.fieldData['sort-order'] || 0))
             .map((item) => ({
