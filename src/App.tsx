@@ -104,7 +104,7 @@ const App = () => {
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 cursor-none pointer-events-auto"
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -150,7 +150,7 @@ const App = () => {
                       key={item.label}
                       href={item.href}
                       variants={fadeUp}
-                      className="group block w-fit cursor-none relative"
+                      className="group block w-fit cursor-pointer relative"
                       onMouseEnter={() => setHoveredNav(item.label)}
                       animate={{
                         opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
@@ -179,7 +179,7 @@ const App = () => {
                     variants={fadeUp}
                     onMouseEnter={() => setIsWorkHovered(true)}
                     onMouseLeave={() => setIsWorkHovered(false)}
-                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-none"
+                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-pointer"
                   >
                     <AnimatePresence mode="wait" initial={false}>
                       {isWorkHovered ? (
@@ -216,7 +216,7 @@ const App = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute -top-12 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-none"
+                  className="absolute -top-12 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-pointer"
                 >
                   <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
                   {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
@@ -260,7 +260,7 @@ const App = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email"
-                    className="w-full bg-transparent border-b border-white/20 rounded-none py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-highlightRed transition-colors placeholder:text-white/20 font-sans cursor-none text-right md:text-left"
+                    className="w-full bg-transparent border-b border-white/20 rounded-none py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-highlightRed transition-colors placeholder:text-white/20 font-sans cursor-text text-right md:text-left"
                   />
                 </div>
               </div>
@@ -271,7 +271,7 @@ const App = () => {
                   href="https://linkedin.com/company/protagonistink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none"
+                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <LinkedinIcon className="w-5 h-5" />
                 </a>
@@ -279,7 +279,7 @@ const App = () => {
                   href="https://instagram.com/protagonist.ink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-none"
+                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <InstagramIcon className="w-5 h-5" />
                 </a>
