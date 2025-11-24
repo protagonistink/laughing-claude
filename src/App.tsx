@@ -82,9 +82,9 @@ const App = () => {
   };
 
   const navItems = [
-    { label: "Our Story", href: "/our-story" },
-    { label: "What We Do", href: "/what-we-do" },
-    { label: "Get in Touch", href: "/get-in-touch" }
+    { label: "Our Story", href: "/about" },
+    { label: "What We Do", href: "/services" },
+    { label: "Get in Touch", href: "/contact" }
   ];
 
   // Animation Variants

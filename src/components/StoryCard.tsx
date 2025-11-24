@@ -9,7 +9,7 @@ interface StoryCardProps {
 }
 
 export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
-  return (
+  const CardContent = (
     <motion.div
       className="group flex items-center gap-5 cursor-pointer w-full p-3 rounded-2xl -mx-3"
       initial={{ opacity: 0, x: 50 }}
@@ -61,6 +61,17 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
       </motion.div>
     </motion.div>
   );
+
+  // Wrap in anchor tag if URL exists
+  if (story.url) {
+    return (
+      <a href={story.url} className="block no-underline">
+        {CardContent}
+      </a>
+    );
+  }
+
+  return CardContent;
 };
 
 export default StoryCard;
