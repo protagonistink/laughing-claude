@@ -20,10 +20,11 @@ const App = () => {
   const [isWorkHovered, setIsWorkHovered] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
-  // Webflow hamburger toggles menu state
+  // Webflow hamburger opens menu
   useEffect(() => {
-    const handleToggle = () => {
-      setIsOpen(prev => !prev);
+    const handleToggle = (event: any) => {
+      // Explicitly set to open when Webflow nav is clicked
+      setIsOpen(true);
     };
 
     window.addEventListener('toggleMenu', handleToggle);
@@ -60,9 +61,9 @@ const App = () => {
   };
 
   const navItems = [
-    { label: "Our Story", href: "#" },
-    { label: "What We Do", href: "#" },
-    { label: "Get in Touch", href: "#" }
+    { label: "Our Story", href: "/about" },
+    { label: "What We Do", href: "/services" },
+    { label: "Get in Touch", href: "/contact" }
   ];
 
   // Animation Variants
@@ -109,10 +110,10 @@ const App = () => {
 
   return (
     <>
-      <CursorTrail />
-
       <AnimatePresence>
         {isOpen && (
+          <>
+            <CursorTrail />
           <motion.div
             key="app-container"
             className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
@@ -124,11 +125,11 @@ const App = () => {
             {/* CLOSE BUTTON */}
             <button
               onClick={handleClose}
-              className="absolute top-8 right-8 z-[10000] text-white hover:text-brand-highlightRed transition-colors lg:hidden"
+              className="absolute top-8 right-[-12px] z-[10000] text-white hover:text-brand-highlightRed transition-colors lg:hidden"
               aria-label="Close menu"
               style={{ cursor: 'pointer' }}
             >
-              <span className="block text-5xl leading-none">×</span>
+              <span className="block text-[3.3rem] leading-none">×</span>
             </button>
 
             {/* AMBIENT LIGHTING BACKGROUND */}
@@ -231,9 +232,9 @@ const App = () => {
                     onClick={handleClose}
                     className="text-white hover:text-brand-highlightRed transition-colors"
                     aria-label="Close menu"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', marginRight: '-20px' }}
                   >
-                    <span className="block text-5xl leading-none">×</span>
+                    <span className="block text-[3.3rem] leading-none">×</span>
                   </button>
                 </div>
 
@@ -289,7 +290,7 @@ const App = () => {
                   href="https://linkedin.com/company/protagonistink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-brand-highlightRed transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <LinkedinIcon className="w-5 h-5" />
                 </a>
@@ -297,13 +298,14 @@ const App = () => {
                   href="https://instagram.com/protagonist.ink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-brand-highlightRed transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <InstagramIcon className="w-5 h-5" />
                 </a>
               </div>
             </motion.footer>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

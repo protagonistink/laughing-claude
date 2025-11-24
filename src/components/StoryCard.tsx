@@ -9,9 +9,12 @@ interface StoryCardProps {
 }
 
 export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
+  const storyUrl = story.slug ? `/work/${story.slug}` : '#';
+
   return (
-    <motion.div
-      className="group flex items-center gap-5 cursor-pointer w-full p-3 rounded-2xl -mx-3"
+    <motion.a
+      href={storyUrl}
+      className="group flex items-center gap-5 cursor-pointer w-full p-3 rounded-2xl -mx-3 no-underline"
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, delay: 0.2 + (index * 0.15), ease: [0.22, 1, 0.36, 1] }}
@@ -59,7 +62,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
       >
         <ArrowIcon className="w-6 h-6" />
       </motion.div>
-    </motion.div>
+    </motion.a>
   );
 };
 
