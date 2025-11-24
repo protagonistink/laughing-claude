@@ -12,9 +12,11 @@ interface WebflowItem {
     fieldData: {
         name: string;
         slug: string;
-        'main-image'?: WebflowImage; // Adjust based on actual field name
-        'category'?: string;         // Adjust based on actual field name
-        'short-description'?: string; // Adjust based on actual field name
+        'main-image'?: WebflowImage;
+        'category'?: string;
+        'post-summary'?: string; // Updated from short-description
+        'featured'?: boolean;
+        'sort-order'?: number;
     };
 }
 
@@ -45,13 +47,19 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
         }
 
         // Map Webflow items to our Story type
-        return data.items.map((item) => ({
-            id: item.id,
-            title: item.fieldData.name,
-            category: item.fieldData.category || 'Featured Story', // Fallback
-            imageUrl: item.fieldData['main-image']?.url || 'https://placehold.co/600x400/1a1a1a/ffffff?text=No+Image',
-            body: item.fieldData['short-description'] || '',
-        })).slice(0, 3); // Limit to 3 stories
+        return data.items
+            // Optional: Filter by 'featured' if you only want featured stories
+            // .filter(item => item.fieldData.featured)
+            // Optional: Sort by 'sort-order'
+            // .sort((a, b) => (a.fieldData['sort-order'] || 0) - (b.fieldData['sort-order'] || 0))
+            .map((item) => ({
+                id: item.id,
+                title: item.fieldData.name,
+                category: item.fieldData.category || 'Featured Story',
+                imageUrl: item.fieldData['main-image']?.url || 'https://placehold.co/600x400/1a1a1a/ffffff?text=No+Image',
+                body: item.fieldData['post-summary'] || '',
+            }))
+            .slice(0, 3); // Limit to 3 stories
 
     } catch (error) {
         console.error('Error fetching Webflow stories:', error);
