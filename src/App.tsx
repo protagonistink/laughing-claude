@@ -71,6 +71,16 @@ const App = () => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const previous = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = previous;
+      };
+    }
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
 
