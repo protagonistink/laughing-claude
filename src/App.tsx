@@ -82,9 +82,9 @@ const App = () => {
   };
 
   const navItems = [
-    { label: "Our Story", href: "#" },
-    { label: "What We Do", href: "#" },
-    { label: "Get in Touch", href: "#" }
+    { label: "Our Story", href: "/about" },
+    { label: "What We Do", href: "/services" },
+    { label: "Get in Touch", href: "/contact" }
   ];
 
   // Animation Variants
@@ -176,12 +176,8 @@ const App = () => {
                       variants={fadeUp}
                       className="group block w-fit cursor-pointer relative pointer-events-auto"
                       onMouseEnter={() => setHoveredNav(item.label)}
-                      onClick={(e) => {
-                        // If href is just "#", prevent default and close menu
-                        if (item.href === '#') {
-                          e.preventDefault();
-                        }
-                        // Close menu on any click
+                      onClick={() => {
+                        // Close menu and let link navigate
                         handleClose();
                       }}
                       animate={{

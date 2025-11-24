@@ -70,7 +70,7 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
         // Map Webflow items to our Story type
         return allItems
             // Optional: Filter by 'featured' if you only want featured stories
-            // .filter(item => item.fieldData.featured) 
+            // .filter(item => item.fieldData.featured)
             // Optional: Sort by 'sort-order'
             // .sort((a, b) => (a.fieldData['sort-order'] || 0) - (b.fieldData['sort-order'] || 0))
             .map((item) => ({
@@ -79,6 +79,7 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
                 category: item.fieldData.category || 'Featured Story',
                 imageUrl: item.fieldData['main-image']?.url || 'https://placehold.co/600x400/1a1a1a/ffffff?text=No+Image',
                 body: item.fieldData['post-summary'] || '',
+                url: `/news/${item.fieldData.slug}`,
             }))
             .slice(0, 3); // Limit to 3 stories
 
