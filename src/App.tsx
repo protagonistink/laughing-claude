@@ -23,9 +23,14 @@ const App = () => {
   // Webflow hamburger toggles menu state
   useEffect(() => {
     const handleToggle = () => {
-      setIsOpen(prev => !prev);
+      console.log('🎯 React: toggleMenu event received');
+      setIsOpen(prev => {
+        console.log('🎯 React: Menu state changing from', prev, 'to', !prev);
+        return !prev;
+      });
     };
 
+    console.log('🎯 React: Menu component mounted, listening for toggleMenu events');
     window.addEventListener('toggleMenu', handleToggle);
     return () => window.removeEventListener('toggleMenu', handleToggle);
   }, []);
