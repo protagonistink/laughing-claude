@@ -152,24 +152,27 @@ const App = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            key="menu-overlay"
+            key="app-container"
             className="fixed inset-0 z-[9999] bg-brand-dark text-brand-text font-sans overflow-hidden"
             initial="hidden"
             animate="visible"
             exit="exit"
             variants={containerVariants}
           >
-            {/* Everything inside your menu lives inside this wrapper */}
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
+              className="absolute top-8 right-12 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 hover:border-white hover:bg-white/5 transition"
+            >
+              <span className="relative block h-5 w-5">
+                <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rotate-45 bg-white" />
+                <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 -rotate-45 bg-white" />
+              </span>
+            </button>
+
+            {/* rest of your content */}
             <div className="relative h-full w-full flex flex-col p-6 md:p-12">
-              {/* CLOSE BUTTON */}
-              <button
-                onClick={handleClose}
-                className="absolute top-6 left-6 md:top-8 md:left-12 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
-                aria-label="Close menu"
-                style={{ cursor: 'pointer' }}
-              >
-                <span className="block text-5xl md:text-6xl leading-none">×</span>
-              </button>
 
               {/* AMBIENT LIGHTING BACKGROUND */}
               <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
