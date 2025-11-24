@@ -11,7 +11,7 @@ interface StoryCardProps {
 export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
   return (
     <motion.div
-      className="group flex items-center gap-6 cursor-pointer w-full p-4 rounded-2xl -mx-4"
+      className="group flex items-center gap-4 cursor-pointer w-full p-2 rounded-xl -mx-2"
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, delay: 0.2 + (index * 0.15), ease: [0.22, 1, 0.36, 1] }}
@@ -27,7 +27,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
       }}
     >
       {/* Image Container - MOVIE POSTER STYLE (2:3 Aspect Ratio) */}
-      <div className="relative overflow-hidden rounded-sm w-24 h-36 sm:w-28 aspect-[2/3] shrink-0 bg-gray-900 shadow-2xl">
+      <div className="relative overflow-hidden rounded-sm w-16 h-24 sm:w-20 sm:h-30 aspect-[2/3] shrink-0 bg-gray-900 shadow-2xl">
         <motion.img
           src={story.imageUrl}
           alt={story.title}
@@ -40,24 +40,24 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, index }) => {
       </div>
 
       {/* Text Content */}
-      <div className="flex flex-col flex-grow justify-center h-full border-b border-white/10 group-hover:border-transparent pb-6 sm:pb-0 sm:border-none transition-colors duration-300">
+      <div className="flex flex-col flex-grow justify-center h-full border-b border-white/10 group-hover:border-transparent pb-4 sm:pb-0 sm:border-none transition-colors duration-300">
         {/* Category Label: Uppercase Sans for better contrast with Serif Title */}
-        <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2 font-sans">{story.category}</span>
+        <span className="text-[9px] uppercase tracking-[0.2em] text-white/40 mb-1 font-sans">{story.category}</span>
 
         {/* Title: Serif */}
-        <h3 className="text-xl sm:text-2xl text-brand-text font-serif font-light leading-tight max-w-xs group-hover:text-white transition-colors">
+        <h3 className="text-base sm:text-lg text-brand-text font-serif font-light leading-tight max-w-xs group-hover:text-white transition-colors">
           {story.title}
         </h3>
       </div>
 
       {/* Arrow Interaction */}
       <motion.div
-        className="text-white/30 group-hover:text-brand-highlightRed pr-4"
+        className="text-white/30 group-hover:text-brand-highlightRed pr-2"
         variants={{
           hover: { x: 5, color: '#c83c2f' }
         }}
       >
-        <ArrowIcon className="w-6 h-6" />
+        <ArrowIcon className="w-5 h-5" />
       </motion.div>
     </motion.div>
   );

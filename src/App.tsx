@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { SparklesIcon } from './components/Icons';
+import { SparklesIcon, MailIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
 import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
+import { fetchWebflowStories } from './services/webflowService';
 import { Story } from './types';
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasLoadedCMS, setHasLoadedCMS] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
   // Webflow hamburger toggles menu state
@@ -24,12 +26,31 @@ const App = () => {
     return () => window.removeEventListener('toggleMenu', handleToggle);
   }, []);
 
+  // --- FETCH WEBFLOW CMS STORIES ---
+  // Load stories from Webflow CMS when menu opens
+  useEffect(() => {
+    if (isOpen && !hasLoadedCMS) {
+      fetchWebflowStories().then((cmsStories) => {
+        if (cmsStories.length > 0) {
+          setStories(cmsStories);
+          setHasLoadedCMS(true);
+          console.log('✅ Loaded stories from Webflow CMS');
+        } else {
+          console.log('ℹ️ Using fallback mock stories');
+        }
+      });
+    }
+  }, [isOpen, hasLoadedCMS]);
+
   // Hide Webflow page content when menu is open
   useEffect(() => {
     const webflowBody = document.body;
     if (isOpen) {
-      // Hide Webflow content (but not the React root)
+      // Prevent scrolling
       webflowBody.style.overflow = 'hidden';
+      webflowBody.style.position = 'fixed';
+      webflowBody.style.width = '100%';
+      webflowBody.style.top = '0';
 
       // Hide all direct children of body except our React root
       Array.from(webflowBody.children).forEach(child => {
@@ -40,6 +61,9 @@ const App = () => {
     } else {
       // Restore Webflow content
       webflowBody.style.overflow = '';
+      webflowBody.style.position = '';
+      webflowBody.style.width = '';
+      webflowBody.style.top = '';
 
       Array.from(webflowBody.children).forEach(child => {
         (child as HTMLElement).style.visibility = '';
@@ -140,11 +164,11 @@ const App = () => {
               {/* CLOSE BUTTON */}
               <button
                 onClick={handleClose}
-                className="absolute top-6 right-6 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
+                className="absolute top-6 left-6 md:top-8 md:left-12 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
                 aria-label="Close menu"
                 style={{ cursor: 'pointer' }}
               >
-                <span className="block text-3xl leading-none">×</span>
+                <span className="block text-5xl md:text-6xl leading-none">×</span>
               </button>
 
               {/* AMBIENT LIGHTING BACKGROUND */}
@@ -220,7 +244,7 @@ const App = () => {
                   {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
                 </motion.button>
 
-                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-6">
+                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-4 lg:p-6 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-3">
                   <AnimatePresence mode="wait">
                     {stories.map((story, index) => (
                       <motion.div
@@ -237,6 +261,55 @@ const App = () => {
                 </div>
               </div>
             </main>
+
+            {/* FOOTER: Become a Protagonist */}
+            <motion.footer
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="relative z-10 mt-auto pb-6 md:pb-8"
+            >
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-6 md:px-12">
+                {/* Left: Text and Email Input */}
+                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full md:w-auto">
+                  <h4 className="text-xs md:text-sm font-sans uppercase tracking-[0.2em] text-white/60 whitespace-nowrap">
+                    Become a Protagonist
+                  </h4>
+
+                  <div className="relative w-full md:w-auto">
+                    <MailIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                    <input
+                      type="email"
+                      placeholder="Your email"
+                      className="w-full md:w-80 pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-full text-white placeholder-white/40 text-sm focus:outline-none focus:border-brand-highlightBlue/50 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Right: Social Icons */}
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://www.linkedin.com/company/protagonist-ink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/40 hover:text-brand-highlightBlue transition-colors"
+                    aria-label="LinkedIn"
+                  >
+                    <LinkedinIcon className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/protagonist.ink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/40 hover:text-brand-highlightRed transition-colors"
+                    aria-label="Instagram"
+                  >
+                    <InstagramIcon className="w-5 h-5" />
+                  </a>
+                </div>
+              </div>
+            </motion.footer>
             </div>
           </motion.div>
         )}
