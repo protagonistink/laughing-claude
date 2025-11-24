@@ -127,50 +127,40 @@ const App = () => {
 
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* Solid backdrop to ensure complete coverage */}
-            <motion.div
-              key="backdrop"
-              className="fixed inset-0 bg-brand-dark z-[9998]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
+          <motion.div
+            key="menu-overlay"
+            className="fixed inset-0 z-[9999] bg-brand-dark text-brand-text font-sans overflow-hidden"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={containerVariants}
+          >
+            {/* Everything inside your menu lives inside this wrapper */}
+            <div className="relative h-full w-full flex flex-col p-6 md:p-12">
+              {/* CLOSE BUTTON */}
+              <button
+                onClick={handleClose}
+                className="absolute top-6 right-6 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
+                aria-label="Close menu"
+                style={{ cursor: 'pointer' }}
+              >
+                <span className="block text-3xl leading-none">×</span>
+              </button>
 
-            <motion.div
-              key="app-container"
-              className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={containerVariants}
-            >
-            {/* CLOSE BUTTON */}
-            <button
-              onClick={handleClose}
-              className="absolute top-6 right-6 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
-              aria-label="Close menu"
-              style={{ cursor: 'pointer' }}
-            >
-              <span className="block text-3xl leading-none">×</span>
-            </button>
+              {/* AMBIENT LIGHTING BACKGROUND */}
+              <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
+              <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-highlightRed/5 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none z-0" />
 
-            {/* AMBIENT LIGHTING BACKGROUND */}
-            <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-highlightRed/5 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none z-0" />
+              {/* BACKGROUND TEXTURE */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+                }}
+              />
 
-            {/* BACKGROUND TEXTURE */}
-            <div
-              className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-              }}
-            />
-
-            {/* MAIN GRID */}
-            {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-16 md:pt-24">
+              {/* MAIN GRID */}
+              <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-16 md:pt-24">
               {/* LEFT COLUMN: Categories */}
               <div className="lg:col-span-7 flex flex-col justify-between h-full pb-8">
                 <motion.div
@@ -247,9 +237,8 @@ const App = () => {
                 </div>
               </div>
             </main>
-
+            </div>
           </motion.div>
-          </>
         )}
       </AnimatePresence>
     </>
