@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
+import { SparklesIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
 import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
@@ -12,11 +12,6 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [email, setEmail] = useState('');
-
-  // Interaction States
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
-  const [isWorkHovered, setIsWorkHovered] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
   // Webflow hamburger toggles menu state
@@ -71,10 +66,17 @@ const App = () => {
     }
   };
 
+  const categories = [
+    "Case Studies",
+    "Programs",
+    "Arts & Culture"
+  ];
+
   const navItems = [
-    { label: "Our Story", href: "#" },
-    { label: "What We Do", href: "#" },
-    { label: "Get in Touch", href: "#" }
+    { label: "Work with us", href: "#" },
+    { label: "Team", href: "#" },
+    { label: "Careers", href: "#" },
+    { label: "Press", href: "#" }
   ];
 
   // Animation Variants
@@ -168,78 +170,50 @@ const App = () => {
 
             {/* MAIN GRID */}
             {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-32">
-              {/* LEFT COLUMN: Main Navigation */}
-              <div className="lg:col-span-7 flex flex-col justify-center">
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative h-full overflow-hidden pt-16 md:pt-24">
+              {/* LEFT COLUMN: Categories */}
+              <div className="lg:col-span-7 flex flex-col justify-between h-full pb-8">
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="flex flex-col space-y-4"
+                >
+                  {categories.map((category) => (
+                    <motion.div
+                      key={category}
+                      variants={fadeUp}
+                      className="block w-fit"
+                    >
+                      <span className="block text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-normal tracking-tight leading-[0.95] text-white">
+                        {category}
+                      </span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                {/* Bottom Navigation */}
                 <motion.nav
                   variants={staggerContainer}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="flex flex-col mb-16"
-                  onMouseLeave={() => setHoveredNav(null)}
+                  className="flex flex-wrap items-center gap-6 mt-auto"
                 >
                   {navItems.map((item) => (
                     <motion.a
                       key={item.label}
                       href={item.href}
                       variants={fadeUp}
-                      className="group block w-fit cursor-pointer relative"
-                      onMouseEnter={() => setHoveredNav(item.label)}
-                      animate={{
-                        opacity: hoveredNav && hoveredNav !== item.label ? 0.3 : 1
-                      }}
-                      transition={{ duration: 0.3 }}
+                      className="group inline-block cursor-pointer"
                     >
-                      <span
-                        className="block text-5xl md:text-7xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
-                      >
+                      <span className="block px-8 py-4 rounded-full text-sm font-medium font-sans text-white bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-white/10 hover:border-white/20">
                         {item.label}
                       </span>
                     </motion.a>
                   ))}
                 </motion.nav>
-
-                <motion.div
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="flex flex-wrap items-center gap-8 pl-1"
-                >
-                  <motion.a
-                    href="mailto:hello@protagonist.ink"
-                    layout
-                    variants={fadeUp}
-                    onMouseEnter={() => setIsWorkHovered(true)}
-                    onMouseLeave={() => setIsWorkHovered(false)}
-                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-pointer"
-                  >
-                    <AnimatePresence mode="wait" initial={false}>
-                      {isWorkHovered ? (
-                        <motion.span
-                          key="email"
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -20, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          hello@protagonist.ink
-                        </motion.span>
-                      ) : (
-                        <motion.span
-                          key="text"
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -20, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          Start Your Journey
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.a>
-                </motion.div>
               </div>
 
               {/* RIGHT COLUMN: Stories Panel */}
@@ -274,51 +248,6 @@ const App = () => {
               </div>
             </main>
 
-            {/* FOOTER */}
-            <motion.footer
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
-            >
-              {/* Newsletter */}
-              <div className="hidden md:flex w-full md:w-auto flex-col items-end">
-                <p className="text-xs uppercase tracking-widest mb-4 text-white/50 font-sans">
-                  Become a Protagonist
-                </p>
-                <div className="relative w-full md:w-80">
-                  <MailIcon className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your email"
-                    className="w-full bg-transparent border-b border-white/20 rounded-none py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-highlightRed transition-colors placeholder:text-white/20 font-sans cursor-text text-right md:text-left"
-                  />
-                </div>
-              </div>
-
-              {/* Socials */}
-              <div className="flex gap-6 text-white/60 items-center pb-3 w-full md:w-auto justify-end">
-                <a
-                  href="https://linkedin.com/company/protagonistink"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
-                >
-                  <LinkedinIcon className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://instagram.com/protagonist.ink"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
-                >
-                  <InstagramIcon className="w-5 h-5" />
-                </a>
-              </div>
-            </motion.footer>
           </motion.div>
           </>
         )}
