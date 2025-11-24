@@ -29,6 +29,18 @@ const App = () => {
     return () => window.removeEventListener('toggleMenu', handleToggle);
   }, []);
 
+  // Lock Body Scroll when Menu is Open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
 
@@ -113,11 +125,11 @@ const App = () => {
             {/* CLOSE BUTTON */}
             <button
               onClick={handleClose}
-              className="absolute top-6 right-6 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
+              className="absolute top-8 right-8 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
               aria-label="Close menu"
               style={{ cursor: 'pointer' }}
             >
-              <span className="block text-3xl leading-none">×</span>
+              <span className="block text-5xl leading-none">×</span>
             </button>
 
             {/* AMBIENT LIGHTING BACKGROUND */}
@@ -222,7 +234,7 @@ const App = () => {
                   {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
                 </motion.button>
 
-                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-6">
+                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-4">
                   <AnimatePresence mode="wait">
                     {stories.map((story, index) => (
                       <motion.div
@@ -249,8 +261,8 @@ const App = () => {
               className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
             >
               {/* Newsletter */}
-              <div className="hidden md:flex w-full md:w-auto flex-col items-end">
-                <p className="text-xs uppercase tracking-widest mb-4 text-white/50 font-sans">
+              <div className="hidden md:flex w-full md:w-auto flex-row items-center gap-6">
+                <p className="text-xs uppercase tracking-widest text-white/50 font-sans whitespace-nowrap">
                   Become a Protagonist
                 </p>
                 <div className="relative w-full md:w-80">
