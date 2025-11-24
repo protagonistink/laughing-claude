@@ -21,12 +21,21 @@ const App = () => {
   // --- WEBFLOW EVENT LISTENER ---
   // Any Webflow "toggleMenu" event simply OPENS the overlay.
   useEffect(() => {
-    const handleToggle = () => {
-      setIsOpen(true);
+    const handleToggle = (event: Event) => {
+      const custom = event as CustomEvent<{ isOpen?: boolean }>;
+      const detail = custom.detail;
+
+      if (detail && typeof detail.isOpen === 'boolean') {
+        // If Webflow sends an explicit state, use it
+        setIsOpen(detail.isOpen);
+      } else {
+        // Otherwise default to opening the menu
+        setIsOpen(true);
+      }
     };
 
-    window.addEventListener('toggleMenu', handleToggle as EventListener);
-    return () => window.removeEventListener('toggleMenu', handleToggle as EventListener);
+    window.addEventListener('toggleMenu', handleToggle);
+    return () => window.removeEventListener('toggleMenu', handleToggle);
   }, []);
 
   const handleClose = () => {
