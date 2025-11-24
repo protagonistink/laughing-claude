@@ -44,21 +44,23 @@ const App = () => {
     loadStories();
   }, []);
 
-  // Lock Body Scroll when Menu is Open + Hide/Show Hamburger + Hide Navbar
+  // Lock Body Scroll when Menu is Open + Hide Webflow dropdown
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
 
-      // Hide the entire Webflow navbar when menu is open
-      const navbar = document.querySelector('.navbar') ||
-                     document.querySelector('.w-nav') ||
-                     document.querySelector('[data-collapse]');
-      if (navbar && navbar instanceof HTMLElement) {
-        navbar.style.pointerEvents = 'none';
-        navbar.style.zIndex = '0';
+      // Hide Webflow's nav dropdown/overlay that might block clicks
+      const navMenu = document.querySelector('.nav-menu.w-nav-menu');
+      if (navMenu && navMenu instanceof HTMLElement) {
+        navMenu.style.display = 'none';
       }
 
-      // Also hide the hamburger
+      const navOverlay = document.querySelector('.w-nav-overlay');
+      if (navOverlay && navOverlay instanceof HTMLElement) {
+        navOverlay.style.display = 'none';
+      }
+
+      // Hide the hamburger button visually
       const hamburger = document.querySelector('.menu-burger-light') ||
                         document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
@@ -71,13 +73,15 @@ const App = () => {
     } else {
       document.body.style.overflow = '';
 
-      // Show the Webflow navbar when menu is closed
-      const navbar = document.querySelector('.navbar') ||
-                     document.querySelector('.w-nav') ||
-                     document.querySelector('[data-collapse]');
-      if (navbar && navbar instanceof HTMLElement) {
-        navbar.style.pointerEvents = 'auto';
-        navbar.style.zIndex = '';
+      // Show Webflow's nav elements
+      const navMenu = document.querySelector('.nav-menu.w-nav-menu');
+      if (navMenu && navMenu instanceof HTMLElement) {
+        navMenu.style.display = '';
+      }
+
+      const navOverlay = document.querySelector('.w-nav-overlay');
+      if (navOverlay && navOverlay instanceof HTMLElement) {
+        navOverlay.style.display = '';
       }
 
       // Show the hamburger
