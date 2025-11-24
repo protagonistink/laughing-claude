@@ -76,7 +76,7 @@ const App = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-    window.dispatchEvent(new CustomEvent('menuClosed'));
+    window.dispatchEvent(new CustomEvent('closeMenu'));
   };
 
   const navItems = [
