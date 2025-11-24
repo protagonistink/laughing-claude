@@ -19,10 +19,10 @@ const App = () => {
   const [isWorkHovered, setIsWorkHovered] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
-  // Webflow hamburger always OPENS the menu (close button handles closing)
+  // Webflow hamburger toggles menu state
   useEffect(() => {
     const handleToggle = () => {
-      setIsOpen(true);
+      setIsOpen(prev => !prev);
     };
 
     window.addEventListener('toggleMenu', handleToggle);
