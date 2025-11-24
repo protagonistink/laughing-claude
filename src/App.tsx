@@ -124,7 +124,7 @@ const App = () => {
             {/* CLOSE BUTTON */}
             <button
               onClick={handleClose}
-              className="absolute top-8 right-8 z-[10000] text-white hover:text-brand-highlightRed transition-colors"
+              className="absolute top-8 right-8 z-[10000] text-white hover:text-brand-highlightRed transition-colors lg:hidden"
               aria-label="Close menu"
               style={{ cursor: 'pointer' }}
             >
@@ -224,23 +224,36 @@ const App = () => {
               </div>
 
               {/* RIGHT COLUMN: Stories (Desktop Only) */}
-              <div className="hidden lg:flex lg:col-span-5 items-center justify-center relative">
-                {/* Removed "Refresh Stories" Button */}
+              <div className="hidden lg:flex lg:col-span-5 relative">
+                {/* Desktop Close Button - Aligned with Stories */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl flex justify-end z-[10000]">
+                  <button
+                    onClick={handleClose}
+                    className="text-white hover:text-brand-highlightRed transition-colors"
+                    aria-label="Close menu"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <span className="block text-5xl leading-none">×</span>
+                  </button>
+                </div>
 
-                <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-4">
-                  <AnimatePresence mode="wait">
-                    {stories.map((story, index) => (
-                      <motion.div
-                        key={story.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: index * 0.08 }}
-                      >
-                        <StoryCard story={story} index={index} />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                {/* Centered Stories Panel */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-4 pointer-events-auto">
+                    <AnimatePresence mode="wait">
+                      {stories.map((story, index) => (
+                        <motion.div
+                          key={story.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ delay: index * 0.08 }}
+                        >
+                          <StoryCard story={story} index={index} />
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
             </main>
