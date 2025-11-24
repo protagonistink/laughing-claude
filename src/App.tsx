@@ -44,31 +44,31 @@ const App = () => {
     loadStories();
   }, []);
 
-  // Lock Body Scroll when Menu is Open + Hide/Show Hamburger
+  // Lock Body Scroll when Menu is Open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Hide the Webflow hamburger when menu is open
+      // Keep the hamburger visible and clickable - it's now an X to close
       const hamburger = document.querySelector('.menu-burger-light') ||
                         document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
                         document.querySelector('.hamburger-trigger') ||
                         document.querySelector('[data-nav-trigger]');
       if (hamburger && hamburger instanceof HTMLElement) {
-        hamburger.style.opacity = '0';
-        hamburger.style.pointerEvents = 'none';
+        // Make sure it stays on top and clickable
+        hamburger.style.zIndex = '10001';
+        hamburger.style.pointerEvents = 'auto';
       }
     } else {
       document.body.style.overflow = '';
-      // Show the Webflow hamburger when menu is closed
+      // Reset hamburger z-index when menu closes
       const hamburger = document.querySelector('.menu-burger-light') ||
                         document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
                         document.querySelector('.hamburger-trigger') ||
                         document.querySelector('[data-nav-trigger]');
       if (hamburger && hamburger instanceof HTMLElement) {
-        hamburger.style.opacity = '1';
-        hamburger.style.pointerEvents = 'auto';
+        hamburger.style.zIndex = '';
       }
     }
     return () => {
