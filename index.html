@@ -72,45 +72,48 @@
     <!-- Hamburger Integration Script -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Find hamburger button - adjust selector to match your element
-        const hamburger = document.querySelector('.menu-burger') ||
-                          document.querySelector('.w-nav-button') ||
-                          document.querySelector('.hamburger-trigger') ||
-                          document.querySelector('[data-nav-trigger]');
+        // Find ALL hamburger buttons (handles multiple buttons)
+        const hamburgers = document.querySelectorAll('.menu-burger, .w-nav-button, .hamburger-trigger, [data-nav-trigger]');
 
-        if (!hamburger) {
-          console.error('❌ Hamburger button not found. Check your selector.');
+        if (hamburgers.length === 0) {
+          console.error('❌ No hamburger buttons found. Check your selectors.');
           return;
         }
 
-        console.log('✅ Hamburger found:', hamburger);
+        console.log('✅ Found', hamburgers.length, 'hamburger button(s)');
 
-        // Trigger React overlay on click
-        hamburger.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
+        // Attach click event to ALL hamburger buttons
+        hamburgers.forEach(function(hamburger) {
+          hamburger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-          // Dispatch custom event that React listens to
-          const event = new CustomEvent('toggleMenu', {
-            detail: { isOpen: true }
+            console.log('🎯 Hamburger clicked, dispatching toggleMenu event');
+
+            // Dispatch custom event that React listens to
+            const event = new CustomEvent('toggleMenu', {
+              detail: { isOpen: true }
+            });
+            window.dispatchEvent(event);
           });
-          window.dispatchEvent(event);
         });
 
         // Listen for close event from React
         window.addEventListener('closeMenu', function(event) {
           console.log('✅ Close menu event received');
 
-          // If the hamburger has a class that indicates it's open, remove it
-          // Common Webflow classes for open state
-          if (hamburger.classList.contains('w--open')) {
-            hamburger.classList.remove('w--open');
-          }
+          // Reset ALL hamburger buttons
+          hamburgers.forEach(function(hamburger) {
+            // If the hamburger has a class that indicates it's open, remove it
+            if (hamburger.classList.contains('w--open')) {
+              hamburger.classList.remove('w--open');
+            }
 
-          // Reset aria-expanded if present
-          if (hamburger.hasAttribute('aria-expanded')) {
-            hamburger.setAttribute('aria-expanded', 'false');
-          }
+            // Reset aria-expanded if present
+            if (hamburger.hasAttribute('aria-expanded')) {
+              hamburger.setAttribute('aria-expanded', 'false');
+            }
+          });
         });
       });
     </script>
