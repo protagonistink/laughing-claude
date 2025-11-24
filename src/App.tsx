@@ -71,16 +71,6 @@ const App = () => {
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (isOpen) {
-      const previous = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = previous;
-      };
-    }
-  }, [isOpen]);
-
   const handleClose = () => {
     setIsOpen(false);
 
@@ -173,7 +163,7 @@ const App = () => {
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close menu"
-              className="absolute top-12 right-12 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 hover:border-white hover:bg-white/10 transition-all duration-300 hover:scale-110 hover:rotate-90 group"
+              className="absolute top-6 right-6 md:top-8 md:right-8 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 hover:border-white hover:bg-white/10 transition-all duration-300 hover:scale-110 hover:rotate-90 group"
             >
               <span className="relative block h-5 w-5">
                 <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rotate-45 bg-white transition-all duration-300 group-hover:bg-brand-highlightBlue" />
