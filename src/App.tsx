@@ -142,15 +142,6 @@ const App = () => {
             {/* Cursor Trail - Only on menu overlay */}
             <CursorTrail />
 
-            {/* CLOSE BUTTON - Desktop (Top Right, aligned with hamburger) */}
-            <button
-              onClick={handleClose}
-              className="fixed top-6 right-6 md:top-8 md:right-8 z-[10000] text-[#f9f9f9] opacity-90 hover:opacity-100 hover:rotate-90 transition-all duration-300 cursor-pointer group"
-              aria-label="Close menu"
-            >
-              <span className="block text-4xl md:text-5xl leading-none">×</span>
-            </button>
-
             {/* AMBIENT LIGHTING BACKGROUND */}
             <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-highlightBlue/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob pointer-events-none z-0" />
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-highlightRed/5 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none z-0" />
