@@ -19,19 +19,10 @@ const App = () => {
   const [isWorkHovered, setIsWorkHovered] = useState(false);
 
   // --- WEBFLOW EVENT LISTENER ---
-  // Any Webflow "toggleMenu" event simply OPENS the overlay.
+  // Webflow hamburger always OPENS the menu (close button handles closing)
   useEffect(() => {
-    const handleToggle = (event: Event) => {
-      const custom = event as CustomEvent<{ isOpen?: boolean }>;
-      const detail = custom.detail;
-
-      if (detail && typeof detail.isOpen === 'boolean') {
-        // If Webflow sends an explicit state, use it
-        setIsOpen(detail.isOpen);
-      } else {
-        // Otherwise default to opening the menu
-        setIsOpen(true);
-      }
+    const handleToggle = () => {
+      setIsOpen(true);
     };
 
     window.addEventListener('toggleMenu', handleToggle);
