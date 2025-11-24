@@ -244,7 +244,7 @@ const App = () => {
               </div>
 
               {/* RIGHT COLUMN: Stories Panel */}
-              <div className="hidden lg:flex lg:col-span-5 items-center justify-center relative">
+              <div className="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-4 relative">
                 <motion.button
                   onClick={handleGenerate}
                   disabled={isGenerating}
