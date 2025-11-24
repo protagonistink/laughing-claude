@@ -98,8 +98,8 @@
         });
 
         // Listen for close event from React
-        window.addEventListener('closeMenu', function(event) {
-          console.log('✅ Close menu event received');
+        window.addEventListener('menuClosed', function(event) {
+          console.log('✅ Menu closed event received');
 
           // If the hamburger has a class that indicates it's open, remove it
           // Common Webflow classes for open state

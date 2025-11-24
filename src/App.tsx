@@ -29,6 +29,29 @@ const App = () => {
     return () => window.removeEventListener('toggleMenu', handleToggle);
   }, []);
 
+  // Hide Webflow page content when menu is open
+  useEffect(() => {
+    const webflowBody = document.body;
+    if (isOpen) {
+      // Hide Webflow content (but not the React root)
+      webflowBody.style.overflow = 'hidden';
+
+      // Hide all direct children of body except our React root
+      Array.from(webflowBody.children).forEach(child => {
+        if (child.id !== 'root' && !child.classList.contains('demo-hamburger')) {
+          (child as HTMLElement).style.visibility = 'hidden';
+        }
+      });
+    } else {
+      // Restore Webflow content
+      webflowBody.style.overflow = '';
+
+      Array.from(webflowBody.children).forEach(child => {
+        (child as HTMLElement).style.visibility = '';
+      });
+    }
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
 
@@ -102,14 +125,25 @@ const App = () => {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={containerVariants}
-          >
+          <>
+            {/* Solid backdrop to ensure complete coverage */}
+            <motion.div
+              key="backdrop"
+              className="fixed inset-0 bg-brand-dark z-[9998]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+
+            <motion.div
+              key="app-container"
+              className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12 pointer-events-auto"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={containerVariants}
+            >
             {/* CLOSE BUTTON */}
             <button
               onClick={handleClose}
@@ -286,6 +320,7 @@ const App = () => {
               </div>
             </motion.footer>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
