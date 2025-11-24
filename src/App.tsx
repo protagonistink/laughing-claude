@@ -44,12 +44,23 @@ const App = () => {
     loadStories();
   }, []);
 
-  // Lock Body Scroll when Menu is Open + Hide/Show Hamburger
+  // Lock Body Scroll when Menu is Open + Hide/Show Hamburger + Hide Navbar
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Hide the Webflow hamburger when menu is open
-      const hamburger = document.querySelector('.menu-burger') ||
+
+      // Hide the entire Webflow navbar when menu is open
+      const navbar = document.querySelector('.navbar') ||
+                     document.querySelector('.w-nav') ||
+                     document.querySelector('[data-collapse]');
+      if (navbar && navbar instanceof HTMLElement) {
+        navbar.style.pointerEvents = 'none';
+        navbar.style.zIndex = '0';
+      }
+
+      // Also hide the hamburger
+      const hamburger = document.querySelector('.menu-burger-light') ||
+                        document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
                         document.querySelector('.hamburger-trigger') ||
                         document.querySelector('[data-nav-trigger]');
@@ -59,8 +70,19 @@ const App = () => {
       }
     } else {
       document.body.style.overflow = '';
-      // Show the Webflow hamburger when menu is closed
-      const hamburger = document.querySelector('.menu-burger') ||
+
+      // Show the Webflow navbar when menu is closed
+      const navbar = document.querySelector('.navbar') ||
+                     document.querySelector('.w-nav') ||
+                     document.querySelector('[data-collapse]');
+      if (navbar && navbar instanceof HTMLElement) {
+        navbar.style.pointerEvents = 'auto';
+        navbar.style.zIndex = '';
+      }
+
+      // Show the hamburger
+      const hamburger = document.querySelector('.menu-burger-light') ||
+                        document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
                         document.querySelector('.hamburger-trigger') ||
                         document.querySelector('[data-nav-trigger]');
