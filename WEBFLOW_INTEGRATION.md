@@ -1,175 +1,166 @@
 # Webflow Integration Guide
 
-## Step 1: Build Your React App
+## Overview
+This guide shows you how to add the custom menu overlay to your live Webflow site at protagonistink.webflow.io.
 
-In your `collins-menu` folder:
+## What You Need to Add
 
-```bash
-npm install
-npm run build
-```
+The menu is currently working on your GitHub Pages site. To make it work on Webflow, you need to add three things to your Webflow project:
 
-This creates the `dist/` folder with `assets/index.js` and `assets/index.css`.
-
----
-
-## Step 2: Upload to Netlify
-
-1. Go to your Netlify dashboard: https://app.netlify.com/projects/protagonist-ink
-2. Drag and drop the entire `dist/` folder to deploy
-3. Copy your live URL (e.g., `https://protagonist-ink.netlify.app`)
-
----
-
-## Step 3: Webflow Setup
-
-### A. Remove Webflow's Native Navbar Interactions
-
-1. In Webflow Designer, select your hamburger button (`.w-nav-button`)
-2. In the **Interactions** panel (right side), **DELETE** any click interactions
-3. Or better: Replace the entire Webflow Navbar with a custom div structure
-
-### B. Create the Root Container
-
-1. Add a **Div Block** to your page
-2. Give it the ID: `root`
-3. Set these styles:
-   - **Position:** Fixed
-   - **Width:** 100%
-   - **Height:** 100vh
-   - **Top:** 0
-   - **Left:** 0
-   - **Z-index:** 9999
-4. ⚠️ **Important:** Leave it empty - React will inject content here
-
-### C. Add Custom Hamburger (If Needed)
-
-If you deleted the Webflow navbar, create a simple hamburger:
-
-1. Add a **Button** or **Link Block** in your header
-2. Give it the class: `hamburger-trigger` (or any custom class)
-3. Style it as your hamburger icon
-
----
-
-## Step 4: Add Custom Code to Webflow
-
-Go to **Project Settings → Custom Code**
-
-### In the `<head>` section:
+### 1. **Before `</head>` Tag** - Add CSS
+In Webflow: **Project Settings → Custom Code → Head Code**
 
 ```html
-<link rel="stylesheet" href="https://protagonist-ink.netlify.app/assets/index.css">
+<!-- Menu Overlay Styles -->
+<link rel="stylesheet" crossorigin href="https://protagonistink.github.io/laughing-claude/assets/index.css">
 ```
 
-Replace `https://protagonist-ink.netlify.app` with your actual Netlify URL.
-
----
-
-### Before `</body>` section:
+### 2. **Before `</body>` Tag** - Add React App and Scripts
+In Webflow: **Project Settings → Custom Code → Footer Code**
 
 ```html
-<!-- React App Module -->
-<script type="module" src="https://protagonist-ink.netlify.app/assets/index.js"></script>
+<!-- React App Root (the menu will render here) -->
+<div id="root"></div>
 
-<!-- Webflow Hamburger Integration -->
+<!-- Menu Overlay Script -->
+<script type="module" crossorigin src="https://protagonistink.github.io/laughing-claude/assets/index.js"></script>
+
+<!-- Hamburger Integration Script -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Find hamburger button - adjust selector to match your element
-    const hamburger = document.querySelector('.menu-burger') ||
-                      document.querySelector('.w-nav-button') ||
-                      document.querySelector('.hamburger-trigger') ||
-                      document.querySelector('[data-nav-trigger]');
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔍 Looking for hamburger menu...');
 
-    if (!hamburger) {
-      console.error('❌ Hamburger button not found. Check your selector.');
-      return;
+  // Find hamburger button - tries multiple selectors
+  const hamburger = document.querySelector('.menu-burger') ||
+                    document.querySelector('.w-nav-button') ||
+                    document.querySelector('.hamburger-trigger') ||
+                    document.querySelector('[data-nav-trigger]') ||
+                    document.querySelector('.navbar-menu-button');
+
+  if (!hamburger) {
+    console.error('❌ Hamburger button not found. Available elements:', {
+      menuBurgers: document.querySelectorAll('.menu-burger').length,
+      wNavButtons: document.querySelectorAll('.w-nav-button').length,
+      customTriggers: document.querySelectorAll('[data-nav-trigger]').length
+    });
+    return;
+  }
+
+  console.log('✅ Hamburger found:', hamburger);
+
+  // Trigger React overlay on click
+  hamburger.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log('🍔 Hamburger clicked!');
+
+    // Dispatch custom event that React listens to
+    const event = new CustomEvent('toggleMenu', {
+      detail: { isOpen: true }
+    });
+    window.dispatchEvent(event);
+  });
+
+  // Listen for close event from React
+  window.addEventListener('menuClosed', function() {
+    console.log('✅ Menu closed');
+
+    // Reset Webflow's open state
+    if (hamburger.classList.contains('w--open')) {
+      hamburger.classList.remove('w--open');
     }
 
-    console.log('✅ Hamburger found:', hamburger);
-
-    // Trigger React overlay on click
-    hamburger.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      // Dispatch custom event that React listens to
-      const event = new CustomEvent('toggleMenu', {
-        detail: { isOpen: true }
-      });
-      window.dispatchEvent(event);
-
-      console.log('🎬 Menu opened');
-    });
+    if (hamburger.hasAttribute('aria-expanded')) {
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
   });
+
+  console.log('✅ Menu integration ready!');
+});
 </script>
 ```
 
-⚠️ **Important:** Update the Netlify URL to match your deployment!
+## Step-by-Step Instructions
 
----
+1. **Open Webflow Editor**
+   - Go to your Protagonist Ink project in Webflow
+   - Click the gear icon (Project Settings)
 
-## Step 5: Publish and Test
+2. **Add Head Code**
+   - Navigate to: **Custom Code** tab
+   - Find the **Head Code** section
+   - Paste the CSS link tag shown above
+   - Click **Save Changes**
 
-1. **Publish** your Webflow site
-2. Open it in a browser
-3. Open **DevTools** (F12) → **Console** tab
-4. Click the hamburger
-5. You should see:
-   - `✅ Hamburger found: [object]`
-   - `🎬 Menu opened`
-6. The cinematic overlay should appear!
+3. **Add Footer Code**
+   - In the same Custom Code settings
+   - Find the **Footer Code** section
+   - Paste the entire footer code block shown above
+   - Click **Save Changes**
 
----
+4. **Publish Your Site**
+   - Click **Publish** in the top right
+   - Select **Publish to Selected Domains**
+   - Wait for deployment to complete
+
+5. **Test the Menu**
+   - Visit protagonistink.webflow.io
+   - Click the hamburger menu in your navbar
+   - The overlay should slide down from the top
+   - Click the × button to close it
 
 ## Troubleshooting
 
-### Issue: Nothing happens when I click
+### Menu doesn't open when clicking hamburger
 
-**Check:**
-1. Open Console (F12) - do you see the `✅ Hamburger found` message?
-   - ❌ **No:** Your selector is wrong. Inspect your hamburger element and update the selector in the script
-   - ✅ **Yes:** Continue to step 2
+**Check the browser console:**
+1. Right-click on the page → Inspect
+2. Go to the **Console** tab
+3. Click the hamburger menu
+4. Look for error messages
 
-2. Do you see `🎬 Menu opened` when you click?
-   - ❌ **No:** Click event not firing. Check if Webflow interactions are still active (remove them)
-   - ✅ **Yes:** Continue to step 3
+**Common issues:**
 
-3. Check for errors in Console
-   - `Failed to fetch` → Your Netlify URL is wrong
-   - `root element not found` → Add the `<div id="root">` container
+**"Hamburger button not found"**
+- The script can't find your hamburger element
+- You may need to update the selector in the integration script
+- Tell me what Webflow class your hamburger uses, and I'll update the script
 
-### Issue: Styles look broken
+**Script errors**
+- Make sure you pasted the code in the **Footer Code** section, not the header
+- Verify there are no typos in the code
 
-- Make sure the CSS `<link>` is in the `<head>`, not the footer
-- Verify your Netlify URL ends with `/assets/index.css`
-- Clear your browser cache
+### Menu opens but styling looks off
 
-### Issue: Hamburger opens Webflow nav AND React overlay
+- Check that the CSS link is in the **Head Code** section
+- Clear your browser cache (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows)
+- Check browser console for CSS loading errors
 
-- You still have Webflow interactions active
-- Remove all interactions from the hamburger button
-- Or add `e.stopPropagation()` in the script (already included above)
+### Need to update the menu content/design
+
+- The menu content is defined in the React app
+- Any changes need to be made in this GitHub repository
+- After changes, commit and push - GitHub Actions will rebuild and deploy automatically
+- Webflow will automatically use the updated version (it's linked to GitHub Pages)
+
+## Finding Your Hamburger Selector
+
+If the menu doesn't work, you may need to identify the correct selector for your hamburger:
+
+1. Right-click on your hamburger menu → Inspect Element
+2. Look for the class names on the button element
+3. Common Webflow classes: `w-nav-button`, `menu-button`, etc.
+4. Update line 10 in the integration script with your selector
+
+## Next Steps
+
+Once this is working, you can:
+- Customize the menu categories in `src/App.tsx`
+- Update navigation links
+- Adjust colors and styling in `tailwind.config.js`
+- Add your Gemini API key for AI-generated stories (optional)
 
 ---
 
-## Custom Hamburger Selector
-
-If your hamburger has a different class or ID, update this line:
-
-```javascript
-const hamburger = document.querySelector('.YOUR-CUSTOM-CLASS');
-```
-
-Common selectors:
-- `.w-nav-button` - Webflow default
-- `#hamburger` - Custom ID
-- `[data-nav="trigger"]` - Custom data attribute
-
----
-
-## Need Help?
-
-1. Share your Webflow **published URL**
-2. Share the **DevTools Console** output
-3. Confirm your **Netlify deployment URL**
+**Need help?** Check the browser console for debugging messages, or let me know what errors you see!
