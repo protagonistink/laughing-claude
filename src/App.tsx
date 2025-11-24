@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { MailIcon, SparklesIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
+import { ArrowRight } from 'lucide-react';
+import { MailIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
-import { generateCreativeStories, MOCK_STORIES } from './services/geminiService';
+import { MOCK_STORIES } from './services/geminiService';
 import { fetchWebflowStories } from './services/webflowService';
 import { Story } from './types';
 
@@ -12,7 +13,6 @@ const App = () => {
   // If you are previewing locally and see nothing, temporarily change this to true.
   const [isOpen, setIsOpen] = useState(false);
   const [stories, setStories] = useState<Story[]>(MOCK_STORIES);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState('');
 
   // Interaction States
@@ -57,17 +57,6 @@ const App = () => {
     // Optional: tell Webflow the menu has closed if you want
     // to wire Lottie/IX back to the burger state.
     window.dispatchEvent(new CustomEvent('menuClosed'));
-  };
-
-  const handleGenerate = async () => {
-    if (isGenerating) return;
-    setIsGenerating(true);
-    try {
-      const newStories = await generateCreativeStories();
-      setStories(newStories);
-    } finally {
-      setIsGenerating(false);
-    }
   };
 
   const navItems = [
@@ -195,13 +184,14 @@ const App = () => {
                   exit="exit"
                   className="flex flex-wrap items-center gap-8 pl-1"
                 >
+                  {/* Main CTA Button */}
                   <motion.a
                     href="mailto:hello@protagonist.ink"
                     layout
                     variants={fadeUp}
                     onMouseEnter={() => setIsWorkHovered(true)}
                     onMouseLeave={() => setIsWorkHovered(false)}
-                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-pointer"
+                    className="bg-brand-highlightRed text-white px-10 py-5 rounded-full text-sm font-bold font-sans tracking-wide hover:bg-[#A02F23] transition-colors relative overflow-hidden min-w-[220px] text-center flex justify-center items-center gap-3 shadow-[0_0_20px_rgba(200,60,47,0.2)] hover:shadow-[0_0_25px_rgba(200,60,47,0.4)] cursor-pointer"
                   >
                     <AnimatePresence mode="wait" initial={false}>
                       {isWorkHovered ? (
@@ -211,6 +201,7 @@ const App = () => {
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: -20, opacity: 0 }}
                           transition={{ duration: 0.2 }}
+                          className="text-[#f9f9f9]"
                         >
                           hello@protagonist.ink
                         </motion.span>
@@ -221,8 +212,10 @@ const App = () => {
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: -20, opacity: 0 }}
                           transition={{ duration: 0.2 }}
+                          className="flex items-center gap-2"
                         >
-                          Start Your Journey
+                          Write your story
+                          <ArrowRight className="w-4 h-4" />
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -230,19 +223,9 @@ const App = () => {
                 </motion.div>
               </div>
 
-              {/* RIGHT COLUMN: Stories Panel */}
+              {/* RIGHT COLUMN: Stories (Desktop Only) */}
               <div className="hidden lg:flex lg:col-span-5 items-center justify-center relative">
-                <motion.button
-                  onClick={handleGenerate}
-                  disabled={isGenerating}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute -top-12 right-0 text-[10px] flex items-center gap-2 text-white/40 hover:text-brand-highlightBlue transition-colors font-sans uppercase tracking-[0.2em] cursor-pointer"
-                >
-                  <SparklesIcon className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
-                  {isGenerating ? 'Dreaming...' : 'Refresh Stories'}
-                </motion.button>
+                {/* Removed "Refresh Stories" Button */}
 
                 <div className="w-full max-w-xl bg-white/5 bg-opacity-[0.03] rounded-3xl p-6 lg:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-sm space-y-4">
                   <AnimatePresence mode="wait">
