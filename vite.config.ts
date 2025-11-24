@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: '/laughing-claude/',
   plugins: [react()],
-  base: '/laughing-claude/',
   build: {
     rollupOptions: {
       output: {
