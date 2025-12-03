@@ -188,8 +188,31 @@ const App = () => {
   }, [isOpen]);
 
   const handleClose = () => {
-    setIsOpen(false);
-    window.dispatchEvent(new CustomEvent('closeMenu'));
+    // Attempt to close via Webflow trigger first to keep states in sync
+    const hamburgerSelectors = [
+      '.menu-burger-light',
+      '.menu-burger',
+      '.w-nav-button',
+      '.hamburger-trigger',
+      '[data-nav-trigger]'
+    ];
+    const hamburger = document.querySelector(hamburgerSelectors.join(','));
+
+    if (hamburger && hamburger instanceof HTMLElement) {
+      console.log('🎯 React: Simulating click on Webflow hamburger to close');
+      // We need to ensure the hamburger is clickable even if we hid it
+      // Temporarily reset pointer-events to allow the click
+      const originalPointerEvents = hamburger.style.pointerEvents;
+      hamburger.style.pointerEvents = 'auto';
+      hamburger.click();
+      // We don't need to reset it back immediately because the menu will close 
+      // and the cleanup effect will run, resetting everything.
+    } else {
+      // Fallback if no trigger found
+      console.warn('🎯 React: No Webflow trigger found, forcing close');
+      setIsOpen(false);
+      window.dispatchEvent(new CustomEvent('closeMenu'));
+    }
   };
 
   const navItems = [
@@ -255,7 +278,7 @@ const App = () => {
             {/* Custom Close Button */}
             <button
               onClick={handleClose}
-              className="absolute top-6 right-6 md:top-12 md:right-12 z-[10002] text-white hover:text-brand-highlightRed transition-colors p-2"
+              className="absolute top-6 right-6 md:top-10 md:right-10 z-[10002] text-white hover:text-brand-highlightRed transition-colors p-2"
               aria-label="Close Menu"
             >
               <X size={32} />
