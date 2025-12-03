@@ -135,7 +135,7 @@ const App = () => {
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans z-[9999] flex flex-col p-6 md:p-12 overflow-y-auto"
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans z-[9999] flex flex-col p-4 md:p-8 lg:p-12 overflow-y-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -157,8 +157,8 @@ const App = () => {
             />
 
             {/* MAIN GRID */}
-            {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative pt-32 pb-12">
+            {/* pt-24/pt-32 to clear the Webflow navbar - reduced on smaller screens */}
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20 z-10 relative pt-24 lg:pt-32 pb-8">
               {/* LEFT COLUMN: Main Navigation */}
               <div className="lg:col-span-7 flex flex-col justify-start">
                 <motion.nav
@@ -166,7 +166,7 @@ const App = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="flex flex-col mb-16"
+                  className="flex flex-col mb-8 lg:mb-16"
                   onMouseLeave={() => setHoveredNav(null)}
                 >
                   {navItems.map((item) => (
@@ -269,7 +269,7 @@ const App = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
+              className="mt-4 lg:mt-8 flex flex-col md:flex-row justify-end items-end gap-4 md:gap-12 border-t border-white/5 pt-4 lg:pt-6 relative z-10 shrink-0"
             >
               {/* Newsletter */}
               <div className="hidden md:flex w-full md:w-auto flex-row items-center gap-6">
