@@ -105,11 +105,16 @@
               lottieElement.setAttribute('data-direction', newDirection);
             }
 
-            // FORCE hamburger to stay white when menu opens (HOMEPAGE ONLY)
+            // FORCE hamburger to stay white when menu opens (ALL PAGES WITH LIGHT BACKGROUNDS)
             if (isMenuOpen) {
-              const isHomepage = window.location.pathname === '/' || window.location.pathname === '';
+              const currentPath = window.location.pathname;
+              const isLightBgPage = currentPath === '/' ||
+                                   currentPath === '' ||
+                                   currentPath === '/about' ||
+                                   currentPath === '/contact' ||
+                                   currentPath === '/whatwedo';
 
-              if (isHomepage) {
+              if (isLightBgPage) {
                 // Keep the menu-burger-light class, remove menu-burger if Webflow adds it
                 setTimeout(function() {
                   if (hamburger.classList.contains('menu-burger') && !hamburger.classList.contains('menu-burger-light')) {
