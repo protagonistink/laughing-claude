@@ -196,7 +196,7 @@ const App = () => {
 
   const navItems = [
     { label: "Our Story", href: "/about" },
-    { label: "What We Do", href: "/services" },
+    { label: "What We Do", href: "/whatwedo" },
     { label: "Get in Touch", href: "/contact" }
   ];
 
