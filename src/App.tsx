@@ -90,8 +90,17 @@ const App = () => {
         if (el instanceof HTMLElement) {
           // Log what we found to help debug
           console.log('🎯 React: Applying fix to nav element:', el.className || el.tagName);
-          el.style.zIndex = '10001';
+          el.style.setProperty('z-index', '2147483647', 'important'); // Max z-index
           el.style.position = 'relative';
+
+          // If it's the Webflow navbar, it might need to be fixed to stay on top if the page scrolls
+          if (el.classList.contains('w-nav') || el.classList.contains('navbar')) {
+            // Check if it was originally fixed or absolute
+            const computedStyle = window.getComputedStyle(el);
+            if (computedStyle.position === 'fixed' || computedStyle.position === 'absolute') {
+              el.style.position = computedStyle.position; // Keep original positioning but boost z-index
+            }
+          }
         }
       });
 
@@ -109,8 +118,8 @@ const App = () => {
 
       document.querySelectorAll(hamburgerSelectors.join(',')).forEach((el) => {
         if (el instanceof HTMLElement) {
-          el.style.zIndex = '';
-          el.style.position = '';
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('position');
         }
       });
 
@@ -128,8 +137,8 @@ const App = () => {
 
       document.querySelectorAll(navSelectors.join(',')).forEach((el) => {
         if (el instanceof HTMLElement) {
-          el.style.zIndex = '';
-          el.style.position = '';
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('position');
         }
       });
     }

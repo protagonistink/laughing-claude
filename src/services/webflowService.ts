@@ -53,13 +53,20 @@ export const fetchWebflowStories = async (): Promise<Story[]> => {
         // Parse each match and aggregate items
         matches.forEach(jsonStr => {
             try {
-                // Clean up any potential HTML entities if necessary (though usually script tags handle this)
-                const data = JSON.parse(jsonStr);
+                // Fix common Webflow JSON embed issues:
+                // 1. Empty fields ending in comma: "key": , -> "key": null,
+                // 2. Empty fields ending in brace: "key": } -> "key": null }
+                let cleanJson = jsonStr
+                    .replace(/:\s*,/g, ': null,')
+                    .replace(/:\s*}/g, ': null}');
+
+                const data = JSON.parse(cleanJson);
                 if (data.items && Array.isArray(data.items)) {
                     allItems.push(...data.items);
                 }
             } catch (e) {
                 console.error('Failed to parse JSON block:', e);
+                console.log('Problematic JSON string:', jsonStr);
             }
         });
 
