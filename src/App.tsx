@@ -135,7 +135,7 @@ const App = () => {
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12"
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans z-[9999] flex flex-col p-6 md:p-12 overflow-y-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -158,9 +158,9 @@ const App = () => {
 
             {/* MAIN GRID */}
             {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative overflow-y-auto pt-32">
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative pt-32 pb-12">
               {/* LEFT COLUMN: Main Navigation */}
-              <div className="lg:col-span-7 flex flex-col justify-center">
+              <div className="lg:col-span-7 flex flex-col justify-start">
                 <motion.nav
                   variants={staggerContainer}
                   initial="hidden"
