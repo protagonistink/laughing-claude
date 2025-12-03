@@ -8,21 +8,21 @@ export const MOCK_STORIES: Story[] = [
     category: 'Featured Story',
     title: 'Woods Hole Film Festival x Protagonist',
     imageUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&h=900&fit=crop',
-    url: '/news/woods-hole-film-festival'
+    url: 'https://protagonist.ink/editorial/woods-hole-film-festival'
   },
   {
     id: '2',
     category: 'Featured Story',
     title: 'The M.A.D School x Protagonist',
     imageUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=900&fit=crop',
-    url: '/news/mad-school'
+    url: 'https://protagonist.ink/editorial/mad-school'
   },
   {
     id: '3',
     category: 'Featured Story',
     title: 'Documenting the greats',
     imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&h=900&fit=crop',
-    url: '/news/documenting-the-greats'
+    url: 'https://protagonist.ink/editorial/documenting-the-greats'
   }
 ];
 
