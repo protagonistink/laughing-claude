@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { MailIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
@@ -51,7 +51,7 @@ const App = () => {
 
       console.log('🎯 React: Menu OPEN - Attempting to fix z-index');
 
-      // 1. Hide the Webflow hamburger (we use our own Close button now)
+      // 1. Keep the Webflow hamburger VISIBLE and CLICKABLE
       const hamburgerSelectors = [
         '.menu-burger-light',
         '.menu-burger',
@@ -65,9 +65,10 @@ const App = () => {
 
       hamburgers.forEach((el) => {
         if (el instanceof HTMLElement) {
-          // Hide it so it doesn't conflict with our custom X
-          el.style.opacity = '0';
-          el.style.pointerEvents = 'none';
+          // Ensure it's on top and clickable
+          el.style.setProperty('z-index', '2147483647', 'important');
+          el.style.pointerEvents = 'auto';
+          el.style.position = 'relative';
         }
       });
 
@@ -132,7 +133,7 @@ const App = () => {
     } else {
       document.body.style.overflow = '';
 
-      // Reset hamburger visibility
+      // Reset hamburger styles
       const hamburgerSelectors = [
         '.menu-burger-light',
         '.menu-burger',
@@ -143,8 +144,9 @@ const App = () => {
 
       document.querySelectorAll(hamburgerSelectors.join(',')).forEach((el) => {
         if (el instanceof HTMLElement) {
-          el.style.opacity = '';
-          el.style.pointerEvents = '';
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('pointer-events');
+          el.style.removeProperty('position');
         }
       });
 
@@ -188,31 +190,8 @@ const App = () => {
   }, [isOpen]);
 
   const handleClose = () => {
-    // Attempt to close via Webflow trigger first to keep states in sync
-    const hamburgerSelectors = [
-      '.menu-burger-light',
-      '.menu-burger',
-      '.w-nav-button',
-      '.hamburger-trigger',
-      '[data-nav-trigger]'
-    ];
-    const hamburger = document.querySelector(hamburgerSelectors.join(','));
-
-    if (hamburger && hamburger instanceof HTMLElement) {
-      console.log('🎯 React: Simulating click on Webflow hamburger to close');
-      // We need to ensure the hamburger is clickable even if we hid it
-      // Temporarily reset pointer-events to allow the click
-      const originalPointerEvents = hamburger.style.pointerEvents;
-      hamburger.style.pointerEvents = 'auto';
-      hamburger.click();
-      // We don't need to reset it back immediately because the menu will close 
-      // and the cleanup effect will run, resetting everything.
-    } else {
-      // Fallback if no trigger found
-      console.warn('🎯 React: No Webflow trigger found, forcing close');
-      setIsOpen(false);
-      window.dispatchEvent(new CustomEvent('closeMenu'));
-    }
+    setIsOpen(false);
+    window.dispatchEvent(new CustomEvent('closeMenu'));
   };
 
   const navItems = [
@@ -275,15 +254,6 @@ const App = () => {
             exit="exit"
             variants={containerVariants}
           >
-            {/* Custom Close Button */}
-            <button
-              onClick={handleClose}
-              className="absolute top-6 right-6 md:top-10 md:right-10 z-[10002] text-white hover:text-brand-highlightRed transition-colors p-2"
-              aria-label="Close Menu"
-            >
-              <X size={32} />
-            </button>
-
             {/* Cursor Trail - Only on menu overlay */}
             <CursorTrail />
 
