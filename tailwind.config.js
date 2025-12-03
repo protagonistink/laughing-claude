@@ -13,6 +13,7 @@ export default {
         'brand-red': '#C83C2F',
         'brand-highlightRed': '#C83C2F',
         'brand-blue': '#1E3F66',
+        'brand-highlightBlue': '#1E3F66',
       },
       fontFamily: {
         serif: ['Cormorant Garamond', 'serif'],
