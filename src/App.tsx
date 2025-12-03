@@ -271,7 +271,7 @@ const App = () => {
 
             {/* MAIN GRID */}
             {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative overflow-y-auto pt-32">
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative pt-32">
               {/* LEFT COLUMN: Main Navigation */}
               <div className="lg:col-span-7 flex flex-col justify-center">
                 <motion.nav
@@ -407,7 +407,7 @@ const App = () => {
                   href="https://linkedin.com/company/protagonistink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-[#c84c3b] transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <LinkedinIcon className="w-5 h-5" />
                 </a>
@@ -415,7 +415,7 @@ const App = () => {
                   href="https://instagram.com/protagonist.ink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-[#c84c3b] transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <InstagramIcon className="w-5 h-5" />
                 </a>
