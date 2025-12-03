@@ -248,7 +248,7 @@ const App = () => {
         {isOpen && (
           <motion.div
             key="app-container"
-            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-6 md:p-12"
+            className="fixed inset-0 min-h-screen w-full bg-brand-dark text-brand-text font-sans overflow-hidden z-[9999] flex flex-col p-4 md:p-8 lg:p-12"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -271,7 +271,7 @@ const App = () => {
 
             {/* MAIN GRID */}
             {/* pt-32 to clear the Webflow navbar */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 z-10 relative pt-32">
+            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20 z-10 relative pt-20 md:pt-28 lg:pt-32">
               {/* LEFT COLUMN: Main Navigation */}
               <div className="lg:col-span-7 flex flex-col justify-center">
                 <motion.nav
@@ -279,7 +279,7 @@ const App = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="flex flex-col mb-16"
+                  className="flex flex-col mb-8 md:mb-12 lg:mb-16"
                   onMouseLeave={() => setHoveredNav(null)}
                 >
                   {navItems.map((item) => (
@@ -299,7 +299,7 @@ const App = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span
-                        className="block text-5xl md:text-7xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
+                        className="block text-4xl md:text-6xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
                       >
                         {item.label}
                       </span>
@@ -382,7 +382,7 @@ const App = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="mt-8 flex flex-col md:flex-row justify-end items-end gap-8 md:gap-12 border-t border-white/5 pt-6 relative z-10 shrink-0"
+              className="mt-4 md:mt-6 lg:mt-8 flex flex-col md:flex-row justify-end items-end gap-4 md:gap-8 lg:gap-12 border-t border-white/5 pt-3 md:pt-4 lg:pt-6 relative z-10 shrink-0"
             >
               {/* Newsletter */}
               <div className="hidden md:flex w-full md:w-auto flex-row items-center gap-6">
