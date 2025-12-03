@@ -48,28 +48,141 @@ const App = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Keep the hamburger visible and clickable - it's now an X to close
-      const hamburger = document.querySelector('.menu-burger-light') ||
-                        document.querySelector('.menu-burger') ||
-                        document.querySelector('.w-nav-button') ||
-                        document.querySelector('.hamburger-trigger') ||
-                        document.querySelector('[data-nav-trigger]');
-      if (hamburger && hamburger instanceof HTMLElement) {
-        // Make sure it stays on top and clickable
-        hamburger.style.zIndex = '10001';
-        hamburger.style.pointerEvents = 'auto';
-      }
+
+      console.log('🎯 React: Menu OPEN - Attempting to fix z-index');
+
+      // 1. Keep the Webflow hamburger VISIBLE and CLICKABLE
+      const hamburgerSelectors = [
+        '.menu-burger-light',
+        '.menu-burger',
+        '.w-nav-button',
+        '.hamburger-trigger',
+        '[data-nav-trigger]'
+      ];
+
+      const hamburgers = document.querySelectorAll(hamburgerSelectors.join(','));
+      console.log(`🎯 React: Found ${hamburgers.length} hamburger elements`);
+
+      hamburgers.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Ensure it's on top and clickable
+          el.style.setProperty('z-index', '2147483647', 'important');
+          el.style.pointerEvents = 'auto';
+          el.style.position = 'relative';
+        }
+      });
+
+      // 2. Ensure the main Webflow Nav Bar is also above the overlay
+      const navSelectors = [
+        '.w-nav',
+        '.navbar',
+        '[data-nav]',
+        'header',
+        'nav',
+        '[role="banner"]',
+        '.navigation',
+        '.main-nav'
+      ];
+
+      const navBars = document.querySelectorAll(navSelectors.join(','));
+      console.log(`🎯 React: Found ${navBars.length} navbar elements`);
+
+      navBars.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Log what we found to help debug
+          console.log('🎯 React: Applying fix to nav element:', el.className || el.tagName);
+          el.style.setProperty('z-index', '2147483647', 'important'); // Max z-index
+          el.style.position = 'relative';
+
+          // If it's the Webflow navbar, it might need to be fixed to stay on top if the page scrolls
+          if (el.classList.contains('w-nav') || el.classList.contains('navbar')) {
+            // Check if it was originally fixed or absolute
+            const computedStyle = window.getComputedStyle(el);
+            if (computedStyle.position === 'fixed' || computedStyle.position === 'absolute') {
+              el.style.position = computedStyle.position; // Keep original positioning but boost z-index
+            }
+          }
+        }
+      });
+
+      // 3. Force Logo to White (Invert if black)
+      const logoSelectors = [
+        '.w-nav-brand',
+        '.brand',
+        '.logo',
+        '[data-logo]'
+      ];
+      const logos = document.querySelectorAll(logoSelectors.join(','));
+      logos.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Apply a filter to make it white. 
+          // brightness(0) invert(1) makes black -> white. 
+          // If it's already white, invert(1) makes it black, so we need to be careful.
+          // A safer bet for "Make White" regardless of input is usually brightness(100) grayscale(1) invert(0)? No.
+          // If the logo is an image (black), invert(1) makes it white.
+          // If the logo is text (black), invert(1) makes it white.
+          // If the logo is white, invert(1) makes it black.
+          // Let's assume the user wants to force it to white. 
+          // brightness(100) forces it to max brightness (white if grayscale).
+          el.style.filter = 'brightness(0) invert(1)';
+          el.style.position = 'relative';
+          el.style.zIndex = '2147483647';
+        }
+      });
+
     } else {
       document.body.style.overflow = '';
-      // Reset hamburger z-index when menu closes
-      const hamburger = document.querySelector('.menu-burger-light') ||
-                        document.querySelector('.menu-burger') ||
-                        document.querySelector('.w-nav-button') ||
-                        document.querySelector('.hamburger-trigger') ||
-                        document.querySelector('[data-nav-trigger]');
-      if (hamburger && hamburger instanceof HTMLElement) {
-        hamburger.style.zIndex = '';
-      }
+
+      // Reset hamburger styles
+      const hamburgerSelectors = [
+        '.menu-burger-light',
+        '.menu-burger',
+        '.w-nav-button',
+        '.hamburger-trigger',
+        '[data-nav-trigger]'
+      ];
+
+      document.querySelectorAll(hamburgerSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('pointer-events');
+          el.style.removeProperty('position');
+        }
+      });
+
+      // Reset nav bar z-index
+      const navSelectors = [
+        '.w-nav',
+        '.navbar',
+        '[data-nav]',
+        'header',
+        'nav',
+        '[role="banner"]',
+        '.navigation',
+        '.main-nav'
+      ];
+
+      document.querySelectorAll(navSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('position');
+        }
+      });
+
+      // Reset Logo Filter
+      const logoSelectors = [
+        '.w-nav-brand',
+        '.brand',
+        '.logo',
+        '[data-logo]'
+      ];
+      document.querySelectorAll(logoSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.filter = '';
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('position');
+        }
+      });
     }
     return () => {
       document.body.style.overflow = '';
@@ -158,7 +271,7 @@ const App = () => {
 
             {/* MAIN GRID */}
             {/* pt-24/pt-32 to clear the Webflow navbar - reduced on smaller screens */}
-            <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20 z-10 relative pt-24 lg:pt-32 pb-8">
+           <main className="flex-grow min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20 z-10 relative pt-24 lg:pt-32 pb-8">
               {/* LEFT COLUMN: Main Navigation */}
               <div className="lg:col-span-7 flex flex-col justify-start">
                 <motion.nav
@@ -166,7 +279,7 @@ const App = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="flex flex-col mb-8 lg:mb-16"
+                  className="flex flex-col mb-6 md:mb-8 lg:mb-16"
                   onMouseLeave={() => setHoveredNav(null)}
                 >
                   {navItems.map((item) => (
@@ -186,7 +299,7 @@ const App = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span
-                        className="block text-5xl md:text-7xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-2"
+                        className="block text-3xl md:text-5xl lg:text-9xl font-serif font-medium tracking-tighter leading-[0.9] text-white transition-colors duration-300 group-hover:text-brand-highlightRed pb-1"
                       >
                         {item.label}
                       </span>
@@ -269,7 +382,7 @@ const App = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="mt-4 lg:mt-8 flex flex-col md:flex-row justify-end items-end gap-4 md:gap-12 border-t border-white/5 pt-4 lg:pt-6 relative z-10 shrink-0"
+              className="mt-3 md:mt-4 lg:mt-8 flex flex-col md:flex-row justify-end items-end gap-3 md:gap-6 lg:gap-12 border-t border-white/5 pt-2 md:pt-3 lg:pt-6 relative z-10 shrink-0"
             >
               {/* Newsletter */}
               <div className="hidden md:flex w-full md:w-auto flex-row items-center gap-6">
@@ -294,7 +407,7 @@ const App = () => {
                   href="https://linkedin.com/company/protagonistink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-[#c84c3b] transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <LinkedinIcon className="w-5 h-5" />
                 </a>
@@ -302,7 +415,7 @@ const App = () => {
                   href="https://instagram.com/protagonist.ink"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-brand-highlightBlue transition-colors hover:scale-110 transform duration-200 cursor-pointer"
+                  className="hover:text-[#c84c3b] transition-colors hover:scale-110 transform duration-200 cursor-pointer"
                 >
                   <InstagramIcon className="w-5 h-5" />
                 </a>
