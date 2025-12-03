@@ -48,20 +48,32 @@ const App = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Keep the hamburger visible and clickable - it's now an X to close
+      
+      // 1. Keep the hamburger visible and clickable
       const hamburger = document.querySelector('.menu-burger-light') ||
                         document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
                         document.querySelector('.hamburger-trigger') ||
                         document.querySelector('[data-nav-trigger]');
       if (hamburger && hamburger instanceof HTMLElement) {
-        // Make sure it stays on top and clickable
         hamburger.style.zIndex = '10001';
         hamburger.style.pointerEvents = 'auto';
       }
+
+      // 2. Ensure the main Webflow Nav Bar is also above the overlay
+      //    (This fixes the issue where the overlay covers the nav bar background/logo)
+      const navBar = document.querySelector('.w-nav') || 
+                     document.querySelector('.navbar') ||
+                     document.querySelector('[data-nav]');
+      if (navBar && navBar instanceof HTMLElement) {
+        navBar.style.zIndex = '10001';
+        navBar.style.position = 'relative'; // Ensure z-index applies
+      }
+
     } else {
       document.body.style.overflow = '';
-      // Reset hamburger z-index when menu closes
+      
+      // Reset hamburger z-index
       const hamburger = document.querySelector('.menu-burger-light') ||
                         document.querySelector('.menu-burger') ||
                         document.querySelector('.w-nav-button') ||
@@ -69,6 +81,15 @@ const App = () => {
                         document.querySelector('[data-nav-trigger]');
       if (hamburger && hamburger instanceof HTMLElement) {
         hamburger.style.zIndex = '';
+      }
+
+      // Reset nav bar z-index
+      const navBar = document.querySelector('.w-nav') || 
+                     document.querySelector('.navbar') ||
+                     document.querySelector('[data-nav]');
+      if (navBar && navBar instanceof HTMLElement) {
+        navBar.style.zIndex = '';
+        navBar.style.position = '';
       }
     }
     return () => {

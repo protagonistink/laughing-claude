@@ -24,7 +24,7 @@ interface WebflowItem {
 // Configuration
 // We fetch the Webflow page that renders the collection as JSON.
 // Since Webflow wraps it in HTML, we must parse the text to extract the JSON.
-const WEBFLOW_ENDPOINT = 'https://protagonistink.webflow.io/json-stories';
+const WEBFLOW_ENDPOINT = '/json-stories';
 
 export const fetchWebflowStories = async (): Promise<Story[]> => {
     try {
