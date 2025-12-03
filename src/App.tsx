@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { MailIcon, LinkedinIcon, InstagramIcon } from './components/Icons';
 import { StoryCard } from './components/StoryCard';
 import CursorTrail from './components/CursorTrail';
@@ -51,7 +51,7 @@ const App = () => {
 
       console.log('🎯 React: Menu OPEN - Attempting to fix z-index');
 
-      // 1. Keep the hamburger visible and clickable
+      // 1. Hide the Webflow hamburger (we use our own Close button now)
       const hamburgerSelectors = [
         '.menu-burger-light',
         '.menu-burger',
@@ -65,9 +65,9 @@ const App = () => {
 
       hamburgers.forEach((el) => {
         if (el instanceof HTMLElement) {
-          el.style.zIndex = '10001';
-          el.style.pointerEvents = 'auto';
-          el.style.position = 'relative'; // Ensure z-index applies
+          // Hide it so it doesn't conflict with our custom X
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
         }
       });
 
@@ -104,10 +104,35 @@ const App = () => {
         }
       });
 
+      // 3. Force Logo to White (Invert if black)
+      const logoSelectors = [
+        '.w-nav-brand',
+        '.brand',
+        '.logo',
+        '[data-logo]'
+      ];
+      const logos = document.querySelectorAll(logoSelectors.join(','));
+      logos.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Apply a filter to make it white. 
+          // brightness(0) invert(1) makes black -> white. 
+          // If it's already white, invert(1) makes it black, so we need to be careful.
+          // A safer bet for "Make White" regardless of input is usually brightness(100) grayscale(1) invert(0)? No.
+          // If the logo is an image (black), invert(1) makes it white.
+          // If the logo is text (black), invert(1) makes it white.
+          // If the logo is white, invert(1) makes it black.
+          // Let's assume the user wants to force it to white. 
+          // brightness(100) forces it to max brightness (white if grayscale).
+          el.style.filter = 'brightness(0) invert(1)';
+          el.style.position = 'relative';
+          el.style.zIndex = '2147483647';
+        }
+      });
+
     } else {
       document.body.style.overflow = '';
 
-      // Reset hamburger z-index
+      // Reset hamburger visibility
       const hamburgerSelectors = [
         '.menu-burger-light',
         '.menu-burger',
@@ -118,8 +143,8 @@ const App = () => {
 
       document.querySelectorAll(hamburgerSelectors.join(',')).forEach((el) => {
         if (el instanceof HTMLElement) {
-          el.style.removeProperty('z-index');
-          el.style.removeProperty('position');
+          el.style.opacity = '';
+          el.style.pointerEvents = '';
         }
       });
 
@@ -141,6 +166,21 @@ const App = () => {
           el.style.removeProperty('position');
         }
       });
+
+      // Reset Logo Filter
+      const logoSelectors = [
+        '.w-nav-brand',
+        '.brand',
+        '.logo',
+        '[data-logo]'
+      ];
+      document.querySelectorAll(logoSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.filter = '';
+          el.style.removeProperty('z-index');
+          el.style.removeProperty('position');
+        }
+      });
     }
     return () => {
       document.body.style.overflow = '';
@@ -154,7 +194,7 @@ const App = () => {
 
   const navItems = [
     { label: "Our Story", href: "/about" },
-    { label: "What We Do", href: "/whatwedo" },
+    { label: "What We Do", href: "/services" },
     { label: "Get in Touch", href: "/contact" }
   ];
 
@@ -212,6 +252,15 @@ const App = () => {
             exit="exit"
             variants={containerVariants}
           >
+            {/* Custom Close Button */}
+            <button
+              onClick={handleClose}
+              className="absolute top-6 right-6 md:top-12 md:right-12 z-[10002] text-white hover:text-brand-highlightRed transition-colors p-2"
+              aria-label="Close Menu"
+            >
+              <X size={32} />
+            </button>
+
             {/* Cursor Trail - Only on menu overlay */}
             <CursorTrail />
 
