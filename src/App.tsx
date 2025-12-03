@@ -48,49 +48,90 @@ const App = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      
+
+      console.log('🎯 React: Menu OPEN - Attempting to fix z-index');
+
       // 1. Keep the hamburger visible and clickable
-      const hamburger = document.querySelector('.menu-burger-light') ||
-                        document.querySelector('.menu-burger') ||
-                        document.querySelector('.w-nav-button') ||
-                        document.querySelector('.hamburger-trigger') ||
-                        document.querySelector('[data-nav-trigger]');
-      if (hamburger && hamburger instanceof HTMLElement) {
-        hamburger.style.zIndex = '10001';
-        hamburger.style.pointerEvents = 'auto';
-      }
+      const hamburgerSelectors = [
+        '.menu-burger-light',
+        '.menu-burger',
+        '.w-nav-button',
+        '.hamburger-trigger',
+        '[data-nav-trigger]'
+      ];
+
+      const hamburgers = document.querySelectorAll(hamburgerSelectors.join(','));
+      console.log(`🎯 React: Found ${hamburgers.length} hamburger elements`);
+
+      hamburgers.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.zIndex = '10001';
+          el.style.pointerEvents = 'auto';
+          el.style.position = 'relative'; // Ensure z-index applies
+        }
+      });
 
       // 2. Ensure the main Webflow Nav Bar is also above the overlay
-      //    (This fixes the issue where the overlay covers the nav bar background/logo)
-      const navBar = document.querySelector('.w-nav') || 
-                     document.querySelector('.navbar') ||
-                     document.querySelector('[data-nav]');
-      if (navBar && navBar instanceof HTMLElement) {
-        navBar.style.zIndex = '10001';
-        navBar.style.position = 'relative'; // Ensure z-index applies
-      }
+      const navSelectors = [
+        '.w-nav',
+        '.navbar',
+        '[data-nav]',
+        'header',
+        'nav',
+        '[role="banner"]',
+        '.navigation',
+        '.main-nav'
+      ];
+
+      const navBars = document.querySelectorAll(navSelectors.join(','));
+      console.log(`🎯 React: Found ${navBars.length} navbar elements`);
+
+      navBars.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Log what we found to help debug
+          console.log('🎯 React: Applying fix to nav element:', el.className || el.tagName);
+          el.style.zIndex = '10001';
+          el.style.position = 'relative';
+        }
+      });
 
     } else {
       document.body.style.overflow = '';
-      
+
       // Reset hamburger z-index
-      const hamburger = document.querySelector('.menu-burger-light') ||
-                        document.querySelector('.menu-burger') ||
-                        document.querySelector('.w-nav-button') ||
-                        document.querySelector('.hamburger-trigger') ||
-                        document.querySelector('[data-nav-trigger]');
-      if (hamburger && hamburger instanceof HTMLElement) {
-        hamburger.style.zIndex = '';
-      }
+      const hamburgerSelectors = [
+        '.menu-burger-light',
+        '.menu-burger',
+        '.w-nav-button',
+        '.hamburger-trigger',
+        '[data-nav-trigger]'
+      ];
+
+      document.querySelectorAll(hamburgerSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.zIndex = '';
+          el.style.position = '';
+        }
+      });
 
       // Reset nav bar z-index
-      const navBar = document.querySelector('.w-nav') || 
-                     document.querySelector('.navbar') ||
-                     document.querySelector('[data-nav]');
-      if (navBar && navBar instanceof HTMLElement) {
-        navBar.style.zIndex = '';
-        navBar.style.position = '';
-      }
+      const navSelectors = [
+        '.w-nav',
+        '.navbar',
+        '[data-nav]',
+        'header',
+        'nav',
+        '[role="banner"]',
+        '.navigation',
+        '.main-nav'
+      ];
+
+      document.querySelectorAll(navSelectors.join(',')).forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.zIndex = '';
+          el.style.position = '';
+        }
+      });
     }
     return () => {
       document.body.style.overflow = '';
