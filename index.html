@@ -108,13 +108,16 @@
             // FORCE hamburger to stay white when menu opens (ALL PAGES WITH LIGHT BACKGROUNDS)
             if (isMenuOpen) {
               const currentPath = window.location.pathname;
+              console.log('🎨 Current path:', currentPath);
               const isLightBgPage = currentPath === '/' ||
                                    currentPath === '' ||
                                    currentPath === '/about' ||
                                    currentPath === '/contact' ||
                                    currentPath === '/whatwedo';
+              console.log('🎨 Is light background page?', isLightBgPage);
 
               if (isLightBgPage) {
+                console.log('🎨 Forcing hamburger to white');
                 // Keep the menu-burger-light class, remove menu-burger if Webflow adds it
                 setTimeout(function() {
                   if (hamburger.classList.contains('menu-burger') && !hamburger.classList.contains('menu-burger-light')) {
@@ -122,15 +125,22 @@
                     hamburger.classList.add('menu-burger-light');
                   }
 
-                  // Force the Lottie element to stay white
+                  // Force the Lottie element to stay white - AGGRESSIVE
                   if (lottieElement) {
                     // Force white by inverting the black icon
-                    lottieElement.style.filter = 'invert(100%) brightness(100%)';
+                    lottieElement.style.setProperty('filter', 'invert(100%) brightness(100%)', 'important');
+                    lottieElement.style.setProperty('opacity', '1', 'important');
+
                     // Also directly set SVG paths to white
-                    const paths = lottieElement.querySelectorAll('path');
-                    paths.forEach(function(path) {
-                      path.setAttribute('fill', 'rgb(249, 249, 249)');
+                    const paths = lottieElement.querySelectorAll('path, g, rect, circle');
+                    paths.forEach(function(el) {
+                      el.setAttribute('fill', 'rgb(249, 249, 249)');
+                      el.setAttribute('stroke', 'rgb(249, 249, 249)');
+                      el.style.setProperty('fill', 'rgb(249, 249, 249)', 'important');
+                      el.style.setProperty('stroke', 'rgb(249, 249, 249)', 'important');
                     });
+
+                    console.log('🎨 Applied white filter to hamburger');
                   }
                 }, 50);
               }
