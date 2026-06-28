@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "tonal-mcp": {
+      "command": "node",
+      "args": ["/path/to/ts-tonal-mcp/dist/index.js"],
+      "env": {
+        "TONAL_USERNAME": "your_tonal_email@example.com",
+        "TONAL_PASSWORD": "your_tonal_password"
+      }
+    }
+  }
+}
